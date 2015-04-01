@@ -1,0 +1,34 @@
+{
+  "name": "affixing-header",
+  "version": "0.1.0",
+  "description": "An affixing header that behaves normally as a user navigates down a page, but reveals itself naturally when a user scrolls or drags upwards. Inspired by iOS Safari, Medium, and others.",
+  "main": "dist/affixing-header.js",
+  "scripts": {
+    "test": "mocha --timeout 10000",
+    "build": "esperanto -i src/affixing-header.js -o dist/affixing-header.js -t umd -n affixingHeader",
+    "build-install": "npm install -g esperanto;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acusti/affixing-header.git"
+  },
+  "keywords": [
+    "scroll",
+    "header",
+    "navbar",
+    "menubar",
+    "fixed",
+    "affix",
+    "browser",
+    "show-hide"
+  ],
+  "author": "Andrew Patton <andrew@acusti.ca> (http://www.acusti.ca)",
+  "license": "CC0",
+  "bugs": {
+    "url": "https://github.com/acusti/affixing-header/issues"
+  },
+  "homepage": "https://github.com/acusti/affixing-header",
+  "dependencies": {
+    "jank-free-onscroll": "^0.2.1"
+  }
+}
