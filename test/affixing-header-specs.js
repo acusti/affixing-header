@@ -58,7 +58,7 @@ function runTests(browserName) {
 
     describe('affixing-header', function() {
         var header;
-        this.timeout(20000);
+        this.timeout(40000);
 
     	before(function() {
     		return setupDocument();
