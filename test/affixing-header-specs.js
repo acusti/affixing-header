@@ -92,7 +92,7 @@ function runTests(browserName) {
     	});
 
     	it('adjusts header position to just above the viewport after 5 upward scroll events', function() {
-            var scrollCount = 10;
+            var scrollCount = 9;
 
             documentBody.sendKeys(Key.PAGE_DOWN);
 
@@ -107,7 +107,7 @@ function runTests(browserName) {
     	});
 
     	it('adjusts header position to fixed when user scrolls back up the page far enough', function() {
-            var scrollCount = 20;
+            var scrollCount = 22;
 
             documentBody.sendKeys(Key.PAGE_DOWN + Key.PAGE_DOWN);
 
