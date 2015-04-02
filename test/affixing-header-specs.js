@@ -72,14 +72,25 @@ function scrollDownDelayed() {
 
 describe('affixing-header', function() {
     var header;
+    this.timeout(20000);
+
+	before(function() {
+		return setupDocument();
+    });
 
 	beforeEach(function() {
-		setupDocument();
         header = browser.findElement({className: headerClass});
         documentBody = browser.findElement({tagName: 'body'});
 	});
+
     afterEach(function() {
-        browser.quit();
+        // Refresh browser, wait until it is reloaded
+        browser.navigate().refresh();
+        return browser.wait(webdriver.until.elementLocated({className: headerClass}));
+    });
+
+    after(function() {
+        return browser.quit();
     });
 
 	it('keeps header at top of document.body (off screen) when user scrolls down', function() {
