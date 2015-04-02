@@ -39,9 +39,7 @@ function setupDocument() {
 			build: process.env.TRAVIS_BUILD_NUMBER,
 			username: process.env.SAUCE_USERNAME,
 			accessKey: process.env.SAUCE_ACCESS_KEY,
-			browserName: 'chrome',
-            name: 'Testing affixing-header',
-            tags: [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH, 'CI']
+			browserName: 'chrome'
 		}).build();
 	} else {
 		browser = new webdriver.Builder()
