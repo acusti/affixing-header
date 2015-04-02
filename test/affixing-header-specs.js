@@ -31,19 +31,22 @@ server.listen(3000);
 // END - Static server
 
 function setupDocument() {
+    var browserName = process.env.BROWSER || 'chrome';
 	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
 		browser = new webdriver.Builder()
 		.usingServer('http://'+ process.env.SAUCE_USERNAME+':'+process.env.SAUCE_ACCESS_KEY+'@ondemand.saucelabs.com:80/wd/hub')
 		.withCapabilities({
-			'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-			build: process.env.TRAVIS_BUILD_NUMBER,
-			username: process.env.SAUCE_USERNAME,
-			accessKey: process.env.SAUCE_ACCESS_KEY,
-			browserName: 'chrome'
+            'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
+            build               : process.env.TRAVIS_BUILD_NUMBER,
+            username            : process.env.SAUCE_USERNAME,
+            accessKey           : process.env.SAUCE_ACCESS_KEY,
+            browserName         : browserName,
+            name                : 'Testing affixing-header',
+            tags                : [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH, 'CI']
 		}).build();
 	} else {
 		browser = new webdriver.Builder()
-		.forBrowser('chrome')
+		.forBrowser(browserName)
 		.build();
 	}
 
