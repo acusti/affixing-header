@@ -80,7 +80,8 @@ function runTests(browserName) {
 
         afterEach(function() {
             // Reset position and refresh browser, wait until it is reloaded
-            documentBody.sendKeys(Key.HOME);
+            controlFlow.execute(pageUpDelayed);
+            controlFlow.execute(pageUpDelayed);
             browser.navigate().refresh();
             return browser.wait(webdriver.until.elementLocated({className: headerClass}));
         });
