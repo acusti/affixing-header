@@ -41,7 +41,7 @@ function runTests(browserName) {
     		.forBrowser(browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browserName).cyan);
+        // console.log(('\n  Running tests for ' + browserName).cyan);
     	return browser.get('http://localhost:3000/test/index.html');
     }
 
@@ -70,27 +70,30 @@ function runTests(browserName) {
         this.timeout(40000);
 
     	before(function() {
-    		return setupDocument();
+    		// return setupDocument();
+            console.log(('\n  Running tests for ' + browserName).cyan);
         });
 
     	beforeEach(function() {
+            setupDocument();
             header = browser.findElement({className: headerClass});
             documentBody = browser.findElement({tagName: 'body'});
     	});
 
         afterEach(function() {
+            browser.quit();
             // Reset position and refresh browser, wait until it is reloaded
-            controlFlow.execute(pageUpDelayed);
-            controlFlow.execute(pageUpDelayed);
-            browser.navigate().refresh();
-            return browser.wait(webdriver.until.elementLocated({className: headerClass}));
+            // controlFlow.execute(pageUpDelayed);
+            // controlFlow.execute(pageUpDelayed);
+            // browser.navigate().refresh();
+            // return browser.wait(webdriver.until.elementLocated({className: headerClass}));
         });
 
-        after(function() {
-            return browser.quit();
+        // after(function() {
+        //     return browser.quit();
             // Resolve promise
             // deferred.resolve();
-        });
+        // });
 
     	it('keeps header at top of document.body (off screen) when user scrolls down', function() {
             expect(header.getCssValue('top')).to.eventually.equal('0px');
