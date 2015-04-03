@@ -101,7 +101,11 @@ function runTests(browserName) {
     	});
 
     	it('adjusts header position to just above the viewport after 5 upward scroll events', function() {
-            var scrollCount = 9;
+            var scrollCount = 6;
+            // Bah! Chrome is weird and needs a lot of up arrows to reveal the header
+            if (browserName === 'chrome') {
+                scrollCount = 9;
+            }
 
             documentBody.sendKeys(Key.PAGE_DOWN);
 
