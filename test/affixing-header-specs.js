@@ -9,7 +9,7 @@ chai.use(require('chai-as-promised'));
 require('colors');
 
 var headerClass      = 'affixing-header',
-    interactionDelay = 150;
+    interactionDelay = 200;
 
 function runTests(browserName) {
     var browser,
@@ -41,7 +41,7 @@ function runTests(browserName) {
     		.forBrowser(browserName)
     		.build();
     	}
-        console.log(('Running tests for ' + browserName).cyan);
+        console.log(('\n  Running tests for ' + browserName).cyan);
     	return browser.get('http://localhost:3000/test/index.html');
     }
 
@@ -79,7 +79,8 @@ function runTests(browserName) {
     	});
 
         afterEach(function() {
-            // Refresh browser, wait until it is reloaded
+            // Reset position and refresh browser, wait until it is reloaded
+            documentBody.sendKeys(Key.HOME);
             browser.navigate().refresh();
             return browser.wait(webdriver.until.elementLocated({className: headerClass}));
         });
@@ -102,12 +103,13 @@ function runTests(browserName) {
 
     	it('adjusts header position to just above the viewport after 5 upward scroll events', function() {
             var scrollCount = 6;
-            // Bah! Chrome is weird and needs a lot of up arrows to reveal the header
-            if (browserName === 'chrome') {
-                scrollCount = 9;
+            // Bah! Chrome (maybe also safari) is weird and needs a lot of up arrows to reveal the header
+            if (browserName === 'chrome' || browserName === 'safari') {
+                scrollCount = 11;
             }
 
-            documentBody.sendKeys(Key.PAGE_DOWN);
+            controlFlow.execute(pageDownDelayed);
+            controlFlow.execute(pageDownDelayed);
 
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
@@ -122,7 +124,8 @@ function runTests(browserName) {
     	it('adjusts header position to fixed when user scrolls back up the page far enough', function() {
             var scrollCount = 22;
 
-            documentBody.sendKeys(Key.PAGE_DOWN + Key.PAGE_DOWN);
+            controlFlow.execute(pageDownDelayed);
+            controlFlow.execute(pageDownDelayed);
 
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
@@ -136,11 +139,21 @@ function runTests(browserName) {
     	});
 
     	it('allows header to disappear again when scrolling down', function() {
-            documentBody.sendKeys(Key.PAGE_DOWN + Key.PAGE_DOWN);
+            var scrollCount = 20;
+
+            controlFlow.execute(pageDownDelayed);
+            controlFlow.execute(pageDownDelayed);
+
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
             // Scroll back up a bunch
-            controlFlow.execute(pageUpDelayed);
+            // TODO: using pageUp doesn't reveal menu in firefox
+            // controlFlow.execute(pageUpDelayed);
+            // controlFlow.execute(scrollUpDelayed);
+            while (scrollCount--) {
+                controlFlow.execute(scrollUpDelayed);
+            }
+
             // Header should be affixed
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('fixed');
