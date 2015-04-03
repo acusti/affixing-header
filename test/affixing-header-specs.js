@@ -6,6 +6,8 @@ var webdriver      = require('selenium-webdriver'),
 
 chai.use(require('chai-as-promised'));
 
+require('colors');
+
 var headerClass      = 'affixing-header',
     interactionDelay = 150;
 
@@ -16,6 +18,13 @@ function runTests(browserName) {
     function setupDocument() {
         browserName = browserName || 'chrome';
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
+            var tags = ['CI', browserName];
+            if (process.env.TRAVIS_PULL_REQUEST) {
+                tags.push(process.env.TRAVIS_PULL_REQUEST);
+            }
+            if (process.env.TRAVIS_BRANCH) {
+                tags.push(process.env.TRAVIS_BRANCH);
+            }
     		browser = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities({
@@ -25,14 +34,14 @@ function runTests(browserName) {
                 accessKey           : process.env.SAUCE_ACCESS_KEY,
                 browserName         : browserName,
                 name                : 'Testing affixing-header',
-                tags                : [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH, 'CI']
+                tags                : tags
     		}).build();
     	} else {
     		browser = new webdriver.Builder()
     		.forBrowser(browserName)
     		.build();
     	}
-
+        console.log(('Running tests for ' + browserName).cyan);
     	return browser.get('http://localhost:3000/test/index.html');
     }
 

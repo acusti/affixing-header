@@ -32,6 +32,7 @@
     "babel": "^4.7.16",
     "chai": "^2.2.0",
     "chai-as-promised": "^4.3.0",
+    "colors": "^1.0.3",
     "es6-module-loader": "^0.16.1",
     "esperanto": "^0.6.24",
     "finalhandler": "^0.3.4",
