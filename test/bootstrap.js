@@ -21,7 +21,7 @@ var runTests = require('./affixing-header-specs'),
     browsers = ['chrome', 'firefox'];
 
 if (process.env.TRAVIS_JOB_NUMBER) {
-	browsers.push('internet explorer', 'safari', 'opera'/*, 'ipad', 'iphone'*/);
+	// browsers.push('internet explorer', 'safari', 'opera'/*, 'ipad', 'iphone'*/);
 }
 
 browsers.forEach(runTests);
