@@ -39,6 +39,9 @@ function runTests(browser) {
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities(capabilities).build();
+            driver.getSession().then(function (session) {
+                process.env.SAUCE_SESSION_ID = session.getId();
+            });
     	} else {
     		driver = new webdriver.Builder()
     		.forBrowser(browser.name)
