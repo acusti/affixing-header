@@ -39,16 +39,17 @@ function runTests(browser) {
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities(capabilities).build();
-            driver.getSession().then(function (session) {
-                process.env.SAUCE_SESSION_ID = session.getId();
-            });
     	} else {
     		driver = new webdriver.Builder()
     		.forBrowser(browser.name)
     		.build();
     	}
         console.log(('\n  Running tests for ' + browser.name).cyan);
-    	return driver.get('http://localhost:3000/test/index.html');
+    	return driver.get('http://localhost:3000/test/index.html').then(function() {
+            driver.getSession().then(function (session) {
+                process.env.SAUCE_SESSION_ID = session.getId();
+            });
+        });
     }
 
     // Returns a function to pass to executeAsyncScript; returns an object to the promise callback with position and top css of the header element
