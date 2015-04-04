@@ -10,8 +10,6 @@ require('colors');
 // ✓ Convert tests to using JS (http://www.tysoncadenhead.com/blog/executeasyncscript-in-selenium-webdriver-for-node#.VR6C9Odkt6k)
 // Figure out best way to bundle module for distribution
 
-var interactionDelay = 200;
-
 function runTests(browserName) {
     var browser;
 
@@ -88,7 +86,7 @@ function runTests(browserName) {
 
         afterEach(function() {
             // Reset position and refresh browser, wait until it is reloaded
-            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1);
+            browser.manage().timeouts().setScriptTimeout(1000, 1);
             browser.executeAsyncScript(scrollTo(), 0).then(function() {
                 browser.navigate().refresh();
             });
@@ -107,7 +105,7 @@ function runTests(browserName) {
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
 
-            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1);
+            browser.manage().timeouts().setScriptTimeout(1000, 1);
             return browser.executeAsyncScript(scrollTo(), Math.round(pageHeight / 2)).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -118,7 +116,7 @@ function runTests(browserName) {
             var scrollCount = 8,
                 scrollY     = Math.round(pageHeight / 2);
 
-            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1 + scrollCount + 1);
+            browser.manage().timeouts().setScriptTimeout(1000, 1 + scrollCount + 1);
             browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -140,7 +138,7 @@ function runTests(browserName) {
                 scrollY     = Math.round(pageHeight / 2),
                 scrollDelta = Math.round(scrollY / (scrollCount + 4));
 
-            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1 + scrollCount + 1);
+            browser.manage().timeouts().setScriptTimeout(1000, 1 + scrollCount + 1);
             browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -159,7 +157,7 @@ function runTests(browserName) {
     	it('allows header to disappear again when scrolling down', function() {
             var scrollY = Math.round(pageHeight / 2);
 
-            browser.manage().timeouts().setScriptTimeout(interactionDelay, 4);
+            browser.manage().timeouts().setScriptTimeout(1000, 4);
             browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
