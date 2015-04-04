@@ -34,7 +34,7 @@ function runTests(browser) {
                 tags                : tags
             };
             if (browser.version) {
-                capabilities.browserVersion = browser.version;
+                capabilities.version = browser.version;
             }
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
