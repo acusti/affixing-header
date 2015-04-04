@@ -92,6 +92,7 @@ function runTests(browserName) {
             browser.executeAsyncScript(scrollTo(), 0).then(function() {
                 browser.navigate().refresh();
             });
+            browser.manage().timeouts().implicitlyWait(5000, 1);
             return browser.wait(webdriver.until.elementLocated({className: 'is-ready'}));
         });
 
