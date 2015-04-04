@@ -10,36 +10,41 @@ require('colors');
 // ✓ Convert tests to using JS (http://www.tysoncadenhead.com/blog/executeasyncscript-in-selenium-webdriver-for-node#.VR6C9Odkt6k)
 // Figure out best way to bundle module for distribution
 
-function runTests(browserName) {
+function runTests(browser) {
     var driver;
 
     function setupDocument() {
-        browserName = browserName || 'chrome';
+        browser.name = browser.name || 'chrome';
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
-            var tags = ['CI', browserName];
+            var tags = ['CI', browser.name],
+                capabilities;
             if (process.env.TRAVIS_PULL_REQUEST) {
                 tags.push(process.env.TRAVIS_PULL_REQUEST);
             }
             if (process.env.TRAVIS_BRANCH) {
                 tags.push(process.env.TRAVIS_BRANCH);
             }
-    		driver = new webdriver.Builder()
-    		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
-    		.withCapabilities({
+            capabilities = {
                 'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
                 build               : process.env.TRAVIS_BUILD_NUMBER,
                 username            : process.env.SAUCE_USERNAME,
                 accessKey           : process.env.SAUCE_ACCESS_KEY,
-                browserName         : browserName,
+                browserName         : browser.name,
                 name                : 'Testing affixing-header',
                 tags                : tags
-    		}).build();
+            };
+            if (browser.version) {
+                capabilities.browserVersion = browser.version;
+            }
+    		driver = new webdriver.Builder()
+    		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
+    		.withCapabilities(capabilities).build();
     	} else {
     		driver = new webdriver.Builder()
-    		.forBrowser(browserName)
+    		.forBrowser(browser.name)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browserName).cyan);
+        console.log(('\n  Running tests for ' + browser.name).cyan);
     	return driver.get('http://localhost:3000/test/index.html');
     }
 

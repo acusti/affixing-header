@@ -18,10 +18,19 @@ server.listen(3000);
 
 // Test runner
 var runTests = require('./affixing-header-specs'),
-    browsers = ['chrome', 'firefox'];
+    browsers = [
+        {name: 'chrome'},
+        {name: 'firefox'}
+    ];
 
 if (process.env.TRAVIS_JOB_NUMBER) {
-	browsers.push('internet explorer', 'safari', 'opera'/*, 'ipad', 'iphone'*/);
+	browsers.push(
+        {name: 'internet explorer'},
+        {name: 'safari', version: 7},
+        {name: 'opera'}/*,
+        {name: 'ipad', version: 8},
+        {name: 'iphone', version: 8}*/
+    );
 }
 
 browsers.forEach(runTests);
