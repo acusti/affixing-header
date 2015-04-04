@@ -89,10 +89,10 @@ function runTests(browserName) {
         afterEach(function() {
             // Reset position and refresh browser, wait until it is reloaded
             browser.manage().timeouts().setScriptTimeout(interactionDelay, 1);
-            return browser.executeAsyncScript(scrollTo(), 0).then(function() {
+            browser.executeAsyncScript(scrollTo(), 0).then(function() {
                 browser.navigate().refresh();
-                return browser.wait(webdriver.until.elementLocated({className: 'is-ready'}));
             });
+            return browser.wait(webdriver.until.elementLocated({className: 'is-ready'}));
         });
 
         after(function() {
