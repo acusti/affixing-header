@@ -1,6 +1,4 @@
 var webdriver      = require('selenium-webdriver'),
-    Key            = webdriver.Key,
-    controlFlow    = webdriver.promise.controlFlow(),
     chai           = require('chai'),
     expect         = chai.expect;
 
@@ -8,12 +6,14 @@ chai.use(require('chai-as-promised'));
 
 require('colors');
 
-var headerClass      = 'affixing-header',
-    interactionDelay = 200;
+// TODO:
+// ✓ Convert tests to using JS (http://www.tysoncadenhead.com/blog/executeasyncscript-in-selenium-webdriver-for-node#.VR6C9Odkt6k)
+// Figure out best way to bundle module for distribution
+
+var interactionDelay = 200;
 
 function runTests(browserName) {
-    var browser,
-        documentBody;
+    var browser;
 
     function setupDocument() {
         browserName = browserName || 'chrome';
@@ -41,133 +41,144 @@ function runTests(browserName) {
     		.forBrowser(browserName)
     		.build();
     	}
-        // console.log(('\n  Running tests for ' + browserName).cyan);
+        console.log(('\n  Running tests for ' + browserName).cyan);
     	return browser.get('http://localhost:3000/test/index.html');
     }
 
-    function pageUpDelayed() {
-        documentBody.sendKeys(Key.PAGE_UP);
-        return webdriver.promise.delayed(interactionDelay);
-    }
+    // Returns a function to pass to executeAsyncScript; returns an object to the promise callback with position and top css of the header element
+    function scrollTo() {
+        return function(scrollY) {
+            var callback     = arguments[arguments.length - 1],
+                // requestFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
+                header       = document.querySelector('.affixing-header');
 
-    function pageDownDelayed() {
-        documentBody.sendKeys(Key.PAGE_DOWN);
-        return webdriver.promise.delayed(interactionDelay);
-    }
-
-    function scrollUpDelayed() {
-        documentBody.sendKeys(Key.ARROW_UP);
-        return webdriver.promise.delayed(interactionDelay);
-    }
-
-    function scrollDownDelayed() {
-        documentBody.sendKeys(Key.ARROW_DOWN);
-        return webdriver.promise.delayed(interactionDelay);
+            // Scroll page
+            window.scrollTo(0, scrollY);
+            // Create scroll event
+            var scrollEvt = document.createEvent('Event');
+            // Define that the event name is 'scroll'.
+            scrollEvt.initEvent('scroll', true, true);
+            // Dispatch event using document
+            document.dispatchEvent(scrollEvt);
+            // Use requestAnimationFrame to call callback
+            setTimeout(function() {
+                callback({
+                    position: header.style.position,
+                    top: header.style.top
+                });
+            }, 200);
+        };
     }
 
     describe('affixing-header', function() {
-        var header;
+        var pageHeight;
         this.timeout(40000);
 
     	before(function() {
-    		// return setupDocument();
-            console.log(('\n  Running tests for ' + browserName).cyan);
+    		return setupDocument();
         });
 
     	beforeEach(function() {
-            setupDocument();
-            header = browser.findElement({className: headerClass});
-            documentBody = browser.findElement({tagName: 'body'});
+            return browser.executeAsyncScript(function() {
+                arguments[arguments.length - 1](document.documentElement.scrollHeight);
+            }).then(function(scrollHeight) {
+                pageHeight = scrollHeight;
+            });
     	});
 
         afterEach(function() {
-            browser.quit();
             // Reset position and refresh browser, wait until it is reloaded
-            // controlFlow.execute(pageUpDelayed);
-            // controlFlow.execute(pageUpDelayed);
-            // browser.navigate().refresh();
-            // return browser.wait(webdriver.until.elementLocated({className: headerClass}));
+            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1);
+            return browser.executeAsyncScript(scrollTo(), 0).then(function() {
+                browser.navigate().refresh();
+                return browser.wait(webdriver.until.elementLocated({className: 'is-ready'}));
+            });
         });
 
-        // after(function() {
-        //     return browser.quit();
+        after(function() {
+            return browser.quit();
             // Resolve promise
             // deferred.resolve();
-        // });
+        });
 
     	it('keeps header at top of document.body (off screen) when user scrolls down', function() {
+            var header = browser.findElement({className: 'affixing-header'});
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
 
-            controlFlow.execute(pageDownDelayed);
-
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            return expect(header.getCssValue('position')).to.eventually.equal('absolute');
+            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1);
+            return browser.executeAsyncScript(scrollTo(), Math.round(pageHeight / 2)).then(function(computedStyles) {
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
     	});
 
-    	it('adjusts header position to just above the viewport after 5 upward scroll events', function() {
-            var scrollCount = 6;
-            // Bah! Chrome (maybe also safari) is weird and needs a lot of up arrows to reveal the header
-            if (browserName === 'chrome' || browserName === 'safari') {
-                scrollCount = 11;
-            }
+    	it('adjusts header position to just above the viewport after “intentional” upward scrolling', function() {
+            var scrollCount = 8,
+                scrollY     = Math.round(pageHeight / 2);
 
-            controlFlow.execute(pageDownDelayed);
-            controlFlow.execute(pageDownDelayed);
-
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            expect(header.getCssValue('position')).to.eventually.equal('absolute');
+            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1 + scrollCount + 1);
+            browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
 
             while (scrollCount--) {
-                controlFlow.execute(scrollUpDelayed);
+                scrollY -= 4;
+                browser.executeAsyncScript(scrollTo(), scrollY);
             }
-            expect(header.getCssValue('top')).to.eventually.not.equal('0px');
-            return expect(header.getCssValue('position')).to.eventually.equal('absolute');
+            return browser.executeAsyncScript(scrollTo(), scrollY - 2).then(function(computedStyles) {
+                // TODO: should this be more specific?
+                expect(computedStyles.top).to.not.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
     	});
 
     	it('adjusts header position to fixed when user scrolls back up the page far enough', function() {
-            var scrollCount = 22;
+            var scrollCount = 14,
+                scrollY     = Math.round(pageHeight / 2),
+                scrollDelta = Math.round(scrollY / (scrollCount + 4));
 
-            controlFlow.execute(pageDownDelayed);
-            controlFlow.execute(pageDownDelayed);
-
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            expect(header.getCssValue('position')).to.eventually.equal('absolute');
+            browser.manage().timeouts().setScriptTimeout(interactionDelay, 1 + scrollCount + 1);
+            browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
 
             while (scrollCount--) {
-                controlFlow.execute(scrollUpDelayed);
+                scrollY -= scrollDelta;
+                browser.executeAsyncScript(scrollTo(), scrollY);
             }
-
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            return expect(header.getCssValue('position')).to.eventually.equal('fixed');
+            return browser.executeAsyncScript(scrollTo(), scrollY - scrollDelta).then(function(computedStyles) {
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('fixed');
+            });
     	});
 
     	it('allows header to disappear again when scrolling down', function() {
-            var scrollCount = 20;
+            var scrollY = Math.round(pageHeight / 2);
 
-            controlFlow.execute(pageDownDelayed);
-            controlFlow.execute(pageDownDelayed);
+            browser.manage().timeouts().setScriptTimeout(interactionDelay, 4);
+            browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
 
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            expect(header.getCssValue('position')).to.eventually.equal('absolute');
             // Scroll back up a bunch
-            // TODO: using pageUp doesn't reveal menu in firefox
-            // controlFlow.execute(pageUpDelayed);
-            // controlFlow.execute(scrollUpDelayed);
-            while (scrollCount--) {
-                controlFlow.execute(scrollUpDelayed);
-            }
+            scrollY -= Math.round(pageHeight / 8);
+            browser.executeAsyncScript(scrollTo(), scrollY).then(function() {});
+            scrollY -= Math.round(pageHeight / 8);
+            browser.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
+                // Header should be affixed
+                expect(computedStyles.top).to.equal('0px');
+                expect(computedStyles.position).to.equal('fixed');
+            });
 
-            // Header should be affixed
-            expect(header.getCssValue('top')).to.eventually.equal('0px');
-            expect(header.getCssValue('position')).to.eventually.equal('fixed');
-
-            controlFlow.execute(scrollDownDelayed);
-
-            // Header should no longer be fixed
-            expect(header.getCssValue('top')).to.eventually.not.equal('0px');
-            // Or if that doesn't work, just test not.equal('0px');
-            return expect(header.getCssValue('position')).to.eventually.equal('absolute');
+            return browser.executeAsyncScript(scrollTo(), scrollY + 5).then(function(computedStyles) {
+                // Header should no longer be fixed
+                expect(computedStyles.top).to.not.equal('0px');
+                expect(computedStyles.position).to.equal('absolute');
+            });
     	});
     });
 }
