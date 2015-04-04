@@ -4,7 +4,7 @@
   "description": "An affixing header that behaves normally as a user navigates down a page, but reveals itself naturally when a user scrolls or drags upwards. Inspired by iOS Safari, Medium, and others.",
   "main": "dist/affixing-header.js",
   "scripts": {
-    "test": "multi='spec=- mocha-sauce-notifying-reporter=-' mocha --reporter mocha-multi test/bootstrap.js",
+    "test": "mocha --reporter mocha-sauce-notifying-reporter test/bootstrap.js",
     "build": "esperanto -i src/affixing-header.js -o dist/affixing-header.js -t umd -n affixingHeader",
     "build-install": "npm install -g esperanto;"
   },
