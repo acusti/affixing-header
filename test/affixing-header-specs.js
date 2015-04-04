@@ -1,6 +1,7 @@
-var webdriver      = require('selenium-webdriver'),
-    chai           = require('chai'),
-    expect         = chai.expect;
+var webdriver = require('selenium-webdriver'),
+    chai      = require('chai'),
+    expect    = chai.expect,
+    Saucelabs = require('saucelabs');
 
 chai.use(require('chai-as-promised'));
 
@@ -11,7 +12,7 @@ require('colors');
 // Figure out best way to bundle module for distribution
 
 function runTests(browser) {
-    var driver;
+    var driver, sauceSessionId;
 
     function setupDocument() {
         browser.name = browser.name || 'chrome';
@@ -47,7 +48,7 @@ function runTests(browser) {
         console.log(('\n  Running tests for ' + browser.name).cyan);
     	return driver.get('http://localhost:3000/test/index.html').then(function() {
             driver.getSession().then(function (session) {
-                process.env.SAUCE_SESSION_ID = session.getId();
+                sauceSessionId = session.getId();
             });
         });
     }
@@ -106,6 +107,13 @@ function runTests(browser) {
         });
 
         after(function() {
+            if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
+                var sauce = new Saucelabs({
+                    username: process.env.SAUCE_USERNAME,
+                    password: process.env.SAUCE_ACCESS_KEY
+                });
+                sauce.updateJob(sauceSessionId, {passed: true}, function () {});
+            }
             return driver.quit();
             // Resolve promise
             // deferred.resolve();
