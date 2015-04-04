@@ -54,7 +54,9 @@ function handleScroll(scrollYCurrent) {
 	// Make sure that the nav bar doesn't wind up stranded in the middle of the page
 	checkNavPosition();
 	// If this is bounce scrolling (e.g. Mac OS, iOS), bail
-	if (scrollY < 0 || (scrollY + window.innerHeight) > document.documentElement.scrollHeight) {
+    // Another way to check the top
+    //(scrollY + window.innerHeight) > document.documentElement.scrollHeight
+	if (scrollY < 0 || document.documentElement.scrollHeight - document.documentElement.scrollTop < document.documentElement.clientHeight) {
 		return;
 	}
 	if (scrollY < scrollYPrev) {

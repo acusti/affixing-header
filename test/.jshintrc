@@ -13,6 +13,8 @@
 	"nonbsp": true,
 	"predef": [
 		"describe",
+		"before",
+		"after",
 		"beforeEach",
 		"afterEach",
 		"it"

@@ -10,8 +10,8 @@
         }
         body {
             background: white;
-            padding-top: 140px;
-            padding-bottom: 400%;
+            padding-top: 150px;
+            padding-bottom: 250%;
         }
         .affixing-header {
             position: absolute;
@@ -36,6 +36,8 @@
         System.transpiler = 'babel';
 		System.import('src/affixing-header').then(function(affix) {
             affix.default(document.querySelector('.affixing-header'));
+            // Indicate that document is ready (used by tests)
+            document.body.className += ' is-ready';
         });
 	</script>
 </body>
