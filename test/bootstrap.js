@@ -25,7 +25,7 @@ function reportTestDetails() {
     if (testState.get('isReported')) {
         return;
     }
-    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.sauceSessionId) {
+    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.get('sauceSessionId')) {
         var sauce = new Saucelabs({
             username: process.env.SAUCE_USERNAME,
             password: process.env.SAUCE_ACCESS_KEY
