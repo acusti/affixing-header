@@ -82,8 +82,14 @@ function runTests(browser) {
     }
 
     describe('affixing-header', function() {
-        var pageHeight;
-        this.timeout(40000);
+        var testDuration = 40000,
+            pageHeight;
+
+        if (browser.name === 'ipad' || browser.name === 'iphone') {
+            // The simulator seems to be suuuuper slow
+            testDuration = 80000;
+        }
+        this.timeout(testDuration);
 
     	before(function() {
     		return setupDocument();
