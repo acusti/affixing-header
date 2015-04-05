@@ -31,9 +31,9 @@ function reportTestDetails() {
             password: process.env.SAUCE_ACCESS_KEY
         });
         sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {});
+        console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
     }
     testState.update({isReported: true});
-    console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
 }
 
 var mocha = new Mocha({
