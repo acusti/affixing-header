@@ -1,6 +1,5 @@
 // Test runner
-var testState = require('./helpers/state'),
-    runTests  = require('./affixing-header-specs'),
+var runTests  = require('./affixing-header-specs'),
     browsers  = [
         {name: 'chrome'},
         {name: 'firefox'}
@@ -18,6 +17,5 @@ if (process.env.TRAVIS_JOB_NUMBER) {
 }
 
 browsers.forEach(function(browser) {
-    testState.update({isFailed: false});
     runTests(browser);
 });

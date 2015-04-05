@@ -6,6 +6,8 @@ var finalhandler = require('finalhandler'),
     Saucelabs    = require('saucelabs'),
     testState    = require('./helpers/state');
 
+require('colors');
+
 // Serve up project root
 var serve = serveStatic('./');
 
@@ -19,6 +21,21 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
+function reportTestDetails() {
+    if (testState.get('isReported')) {
+        return;
+    }
+    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.sauceSessionId) {
+        var sauce = new Saucelabs({
+            username: process.env.SAUCE_USERNAME,
+            password: process.env.SAUCE_ACCESS_KEY
+        });
+        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {});
+    }
+    testState.update({isReported: true});
+    console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
+}
+
 var mocha = new Mocha({
     ui: 'bdd',
     reporter: 'spec'
@@ -30,17 +47,14 @@ var runner = mocha.run(function(failures) {
     process.exit(failures);
 });
 runner.on('fail', function() {
-    testState.update({isFailed: true});
+    testState.update({isFailing: true});
+    reportTestDetails();
+});
+runner.on('suite', function() {
+    testState.reset();
 });
 runner.on('suite end', function() {
-    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.sauceSessionId) {
-        var sauce = new Saucelabs({
-            username: process.env.SAUCE_USERNAME,
-            password: process.env.SAUCE_ACCESS_KEY
-        });
-        sauce.updateJob(testState.sauceSessionId, {passed: !testState.isFailed}, function () {});
-        testState.reset();
-    }
+    reportTestDetails();
 });
 
 // browsers.forEach(function(browser) {
