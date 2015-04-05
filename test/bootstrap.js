@@ -1,7 +1,10 @@
 // BEGIN - Static server for test html
 var finalhandler = require('finalhandler'),
     http         = require('http'),
-    serveStatic  = require('serve-static');
+    serveStatic  = require('serve-static'),
+    Mocha        = require('mocha'),
+    Saucelabs    = require('saucelabs'),
+    testState    = require('./helpers/state');
 
 // Serve up project root
 var serve = serveStatic('./');
@@ -16,20 +19,47 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
-// Test runner
-var runTests = require('./affixing-header-specs'),
-    browsers = [
-        {name: 'chrome'},
-        {name: 'firefox'}
-    ];
+var mocha = new Mocha({
+    ui: 'bdd',
+    reporter: 'spec'
+});
+mocha.addFile('test/conductor.js');
 
-if (process.env.TRAVIS_JOB_NUMBER) {
-	browsers.push(
-        {name: 'internet explorer'},
-        {name: 'safari', version: 7}/*,
-        {name: 'ipad', version: 8},
-        {name: 'iphone', version: 8}*/
-    );
-}
+// browserConfig.set(browsers.shift());
+var runner = mocha.run(function(failures) {
+    process.exit(failures);
+});
+runner.on('fail', function() {
+    testState.update({isFailed: true});
+});
+runner.on('suite end', function() {
+    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.sauceSessionId) {
+        var sauce = new Saucelabs({
+            username: process.env.SAUCE_USERNAME,
+            password: process.env.SAUCE_ACCESS_KEY
+        });
+        sauce.updateJob(testState.sauceSessionId, {passed: !testState.isFailed}, function () {});
+        testState.reset();
+    }
+});
 
-browsers.forEach(runTests);
+// browsers.forEach(function(browser) {
+//     browserConfig.set(browser);
+//     // Start up Mocha
+//     var runner   = mocha.run(),
+//         isFailed = false;
+//     runner.on('fail', function() {
+//         isFailed = true;
+//     });
+//     runner.on('end', function() {
+//         if (process.env.SAUCE_USERNAME && process.env.SAUCE_SESSION_ID && process.env.TRAVIS_JOB_NUMBER) {
+//             var sauce = new Saucelabs({
+//                 username: process.env.SAUCE_USERNAME,
+//                 password: process.env.SAUCE_ACCESS_KEY
+//             });
+//             sauce.updateJob(process.env.SAUCE_SESSION_ID, {passed: !isFailed}, function () {});
+//         }
+//     });
+//
+//     // runTests(browser);
+// });

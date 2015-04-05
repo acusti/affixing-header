@@ -1,7 +1,8 @@
 var webdriver = require('selenium-webdriver'),
     chai      = require('chai'),
     expect    = chai.expect,
-    Saucelabs = require('saucelabs');
+    testState = require('./helpers/state');
+    // Saucelabs = require('saucelabs');
 
 chai.use(require('chai-as-promised'));
 
@@ -12,7 +13,7 @@ require('colors');
 // Figure out best way to bundle module for distribution
 
 function runTests(browser) {
-    var driver, sauceSessionId;
+    var driver;
 
     function setupDocument() {
         browser.name = browser.name || 'chrome';
@@ -48,7 +49,7 @@ function runTests(browser) {
         console.log(('\n  Running tests for ' + browser.name).cyan);
     	return driver.get('http://localhost:3000/test/index.html').then(function() {
             driver.getSession().then(function (session) {
-                sauceSessionId = session.getId();
+                testState.update({sauceSessionId: session.getId()});
             });
         });
     }
@@ -107,13 +108,14 @@ function runTests(browser) {
         });
 
         after(function() {
-            if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
-                var sauce = new Saucelabs({
-                    username: process.env.SAUCE_USERNAME,
-                    password: process.env.SAUCE_ACCESS_KEY
-                });
-                sauce.updateJob(sauceSessionId, {passed: true}, function () {});
-            }
+            // Using mocha's bail option, if test gets here, it passed
+            // if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
+            //     var sauce = new Saucelabs({
+            //         username: process.env.SAUCE_USERNAME,
+            //         password: process.env.SAUCE_ACCESS_KEY
+            //     });
+            //     sauce.updateJob(sauceSessionId, {passed: true}, function () {});
+            // }
             return driver.quit();
             // Resolve promise
             // deferred.resolve();
