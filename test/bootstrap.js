@@ -21,7 +21,7 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
-function reportTestDetails() {
+function reportTestDetails(done) {
     if (testState.get('isReported')) {
         return;
     }
@@ -31,7 +31,9 @@ function reportTestDetails() {
             password: process.env.SAUCE_ACCESS_KEY
         });
         console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
-        return sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {});
+        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {
+            done();
+        });
     }
     testState.update({isReported: true});
 }
@@ -53,8 +55,8 @@ runner.on('fail', function() {
 runner.on('suite', function() {
     testState.reset();
 });
-runner.on('suite end', function() {
-    return reportTestDetails();
+runner.on('suite end', function(done) {
+    reportTestDetails(done);
 });
 
 // browsers.forEach(function(browser) {
