@@ -30,11 +30,17 @@
     <h1>The wonderful and mysterious affixing header</h1>
     <p>Come see the astonishing feats and marvelous magic of the amazing, the wonderful, the impossible <strong>Affixing Header</strong>!</p>
     <!-- <script src="helpers/raf-polyfill.js"></script> -->
-    <script src="/dist/affixing-header-bundled.js"></script>
+    <script src="/node_modules/babel/browser.js"></script>
+    <script src="/node_modules/es6-module-loader/dist/es6-module-loader.js"></script>
 	<script>
-		window.affixingHeader(document.querySelector('.affixing-header'));
-        // Indicate that document is ready (used by tests)
-        document.body.className += ' is-ready';
+        System.baseURL = '/';
+        System.transpiler = 'babel';
+        System.paths['onscrolling'] = '/node_modules/onscrolling/src/onscrolling.js';
+		System.import('src/affixing-header').then(function(affix) {
+            affix.default(document.querySelector('.affixing-header'));
+            // Indicate that document is ready (used by tests)
+            document.body.className += ' is-ready';
+        });
 	</script>
 </body>
 </html>
