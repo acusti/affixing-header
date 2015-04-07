@@ -10,9 +10,9 @@
         isSupported    = requestFrame !== undefined,
         isListening    = false,
         isQueued       = false,
-        onscroll__scrollY        = window.pageYOffset,
+        _onscrolling__scrollY        = window.pageYOffset,
         scrollX        = window.pageXOffset,
-        scrollYCached  = onscroll__scrollY,
+        scrollYCached  = _onscrolling__scrollY,
         scrollXCached  = scrollX,
         directionX     = ['x', 'horizontal'],
         // directionY     = [ 'y', 'vertical'],
@@ -21,19 +21,16 @@
             x   : [],
             y   : [],
             any : []
-        },
-        onscroll__handleScroll,
-        onscroll__onScrollDebouncer,
-        onscroll__onscrolling;
+        };
 
-    function onscroll__handleScroll() {
+    function _onscrolling__handleScroll() {
     	var i;
 
-    	if (onscroll__scrollY !== scrollYCached) {
+    	if (_onscrolling__scrollY !== scrollYCached) {
             for (i = 0; i < callbackQueue.y.length; i++) {
-        		callbackQueue.y[i](onscroll__scrollY);
+        		callbackQueue.y[i](_onscrolling__scrollY);
         	}
-            scrollYCached = onscroll__scrollY;
+            scrollYCached = _onscrolling__scrollY;
         }
     	if (scrollX !== scrollXCached) {
             for (i = 0; i < callbackQueue.x.length; i++) {
@@ -42,7 +39,7 @@
             scrollXCached = scrollX;
         }
         for (i = 0; i < callbackQueue.any.length; i++) {
-            callbackQueue.any[i]([scrollX, onscroll__scrollY]);
+            callbackQueue.any[i]([scrollX, _onscrolling__scrollY]);
         }
 
         isQueued = false;
@@ -50,17 +47,17 @@
 
     function requestTick() {
     	if (!isQueued) {
-    		requestFrame(onscroll__handleScroll);
+    		requestFrame(_onscrolling__handleScroll);
     	}
     	isQueued = true;
     }
 
-    function onscroll__onScrollDebouncer() {
+    function onScrollDebouncer() {
         if (callbackQueue.x.length || callbackQueue.any.length) {
             scrollX = window.pageXOffset;
         }
         if (callbackQueue.y.length || callbackQueue.any.length) {
-            onscroll__scrollY = window.pageYOffset;
+            _onscrolling__scrollY = window.pageYOffset;
         }
     	requestTick();
     }
@@ -76,13 +73,13 @@
      *                 or 'any' (listens to both)
      * @param function callback  Function to attach to a scroll event in specified direction
      */
-    function onscroll__onscrolling(direction, callback) {
+    function onscrolling(direction, callback) {
     	if (!isSupported) {
     		return;
     	}
     	if (!isListening) {
-    		window.addEventListener('scroll', onscroll__onScrollDebouncer);
-    		document.body.addEventListener('touchmove', onscroll__onScrollDebouncer);
+    		window.addEventListener('scroll', onScrollDebouncer);
+    		document.body.addEventListener('touchmove', onScrollDebouncer);
     		isListening = true;
     	}
         // Verify parameters
@@ -102,7 +99,7 @@
         }
     }
 
-    onscroll__onscrolling.remove = function(direction, fn) {
+    onscrolling.remove = function(direction, fn) {
         var queueKey = 'y',
             queue,
             fnIdx;
@@ -126,9 +123,9 @@
             queue.splice(fnIdx, 1);
         }
     };
-    onscroll__onscrolling.off = onscroll__onscrolling.remove;
+    onscrolling.off = onscrolling.remove;
 
-    var onscroll = onscroll__onscrolling;
+    var _onscrolling = onscrolling;
 
     'use strict';
 
@@ -215,8 +212,8 @@
     	header                = navElement;
         header.style.top      = 0;
         header.style.position = 'absolute';
-        // Use onscroll helper to listen for scroll changes
-    	onscroll(affixing_header__handleScroll);
+        // Use onscrolling helper to listen for scroll changes
+    	_onscrolling(affixing_header__handleScroll);
     }
 
     return affixing_header;

@@ -5,9 +5,11 @@
   "main": "dist/affixing-header.js",
   "scripts": {
     "test": "node test/bootstrap.js",
-    "test-mocha": "mocha --reporter spec test/bootstrap.js",
-    "build": "esperanto -b -i src/affixing-header.js -o dist/affixing-header.js -t umd -n affixingHeader",
-    "build-install": "npm install -g esperanto;"
+    "test:mocha": "mocha --reporter spec test/bootstrap.js",
+    "build": "npm run build:normal && npm run build:bundle && npm run build:minify",
+    "build:normal": "esperanto --type umd --name affixingHeader --basedir=node_modules/onscrolling/src/ -i src/affixing-header.js -o dist/affixing-header.js",
+    "build:bundle": "esperanto --bundle --type umd --name affixingHeader --basedir=node_modules/onscrolling/src/ -i src/affixing-header.js -o dist/affixing-header-bundled.js",
+    "build:minify": "uglifyjs dist/affixing-header-bundled.js --screw-ie8 --mangle -o dist/affixing-header-bundled-min.js"
   },
   "repository": {
     "type": "git",
@@ -42,7 +44,8 @@
     "mocha-sauce-notifying-reporter": "0.0.1",
     "saucelabs": "^0.1.1",
     "selenium-webdriver": "^2.45.1",
-    "serve-static": "^1.9.2"
+    "serve-static": "^1.9.2",
+    "uglify-js": "^2.4.19"
   },
   "dependencies": {
     "onscrolling": "^0.3.0"
