@@ -21,7 +21,18 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
-function reportTestDetails(done) {
+var isSauceRequestQueued = false,
+    sauceCallbackQueue   = [];
+
+function sauceCallbackConductor() {
+    sauceCallbackQueue.forEach(function(callback) {
+        callback();
+    });
+    sauceCallbackQueue = [];
+    isSauceRequestQueued = false;
+}
+
+function reportTestDetails() {
     if (testState.get('isReported')) {
         return;
     }
@@ -30,14 +41,12 @@ function reportTestDetails(done) {
             username: process.env.SAUCE_USERNAME,
             password: process.env.SAUCE_ACCESS_KEY
         });
+        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, sauceCallbackConductor);
+        isSauceRequestQueued = true;
         console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
-        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {
-            done();
-        });
     }
     testState.update({isReported: true});
 }
-
 var mocha = new Mocha({
     ui: 'bdd',
     reporter: 'spec'
@@ -46,7 +55,13 @@ mocha.addFile('test/conductor.js');
 
 // browserConfig.set(browsers.shift());
 var runner = mocha.run(function(failures) {
-    process.exit(failures);
+    if (isSauceRequestQueued) {
+        sauceCallbackQueue.push(function() {
+            process.exit(failures);
+        });
+    } else {
+        process.exit(failures);
+    }
 });
 runner.on('fail', function() {
     testState.update({isFailing: true});
@@ -55,8 +70,8 @@ runner.on('fail', function() {
 runner.on('suite', function() {
     testState.reset();
 });
-runner.on('suite end', function(done) {
-    reportTestDetails(done);
+runner.on('suite end', function() {
+    reportTestDetails();
 });
 
 // browsers.forEach(function(browser) {
