@@ -4,7 +4,7 @@
   "description": "An affixing header that behaves normally as a user navigates down a page, but reveals itself naturally when a user scrolls or drags upwards. Inspired by iOS Safari, Medium, and others.",
   "main": "dist/affixing-header.js",
   "scripts": {
-    "test": "node test/bootstrap.js",
+    "test": "npm run build && node test/bootstrap.js",
     "test:mocha": "mocha --reporter spec test/bootstrap.js",
     "build": "npm run build:normal && npm run build:bundle && npm run build:minify",
     "build:normal": "esperanto --type umd --name affixingHeader --basedir=node_modules/onscrolling/src/ -i src/affixing-header.js -o dist/affixing-header.js",
