@@ -1,6 +1,6 @@
 'use strict';
 
-import onscroll from '../node_modules/jank-free-onscroll/src/onscroll';
+import onscrolling from 'onscrolling';
 
 // Keep track of:
 // - state of nav bar
@@ -90,6 +90,6 @@ export default function(navElement) {
 	header                = navElement;
     header.style.top      = 0;
     header.style.position = 'absolute';
-    // Use onscroll helper to listen for scroll changes
-	onscroll(handleScroll);
+    // Use onscrolling helper to listen for scroll changes
+	onscrolling(handleScroll);
 }

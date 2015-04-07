@@ -45,7 +45,7 @@
     "serve-static": "^1.9.2"
   },
   "dependencies": {
-    "jank-free-onscroll": "^0.2.1"
+    "onscrolling": "^0.3.0"
   },
   "jspm": {
     "directories": {

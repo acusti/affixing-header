@@ -16,13 +16,13 @@ The DOM element to which the affixing behaviour should be attached. Must be a si
 
 ### Dependencies
 
-This package uses [jank-free onscroll][], a requestAnimationFrame-based, performant, mobile-friendly scroll event handler, to listen for page scrolls, but has no other dependencies.
+This package uses [onscrolling][], a requestAnimationFrame-based, performant, mobile-friendly scroll event handler, to listen for page scrolls, but has no other dependencies.
 
 ### Compatibility
 
 The scroll handling uses `requestAnimationFrame`, which is [only available in IE10+][raf-caniuse]. For older browsers, your header won’t affix to the top of the page when you scroll up, but you shouldn’t see any other issues (yay progressive enhancement). To add full support for older browsers, just include a [requestAnimationFrame polyfill][raf-polyfill].
 
 [acusti.ca]: http://www.acusti.ca
-[jank-free onscroll]: https://github.com/acusti/jank-free-onscroll
+[onscrolling]: https://github.com/acusti/onscrolling
 [raf-caniuse]: http://caniuse.com/#feat=requestanimationframe
 [raf-polyfill]: https://gist.github.com/paulirish/1579671

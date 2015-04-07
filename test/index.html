@@ -35,6 +35,7 @@
 	<script>
         System.baseURL = '/';
         System.transpiler = 'babel';
+        System.paths['onscrolling'] = '/node_modules/onscrolling/src/onscrolling.js';
 		System.import('src/affixing-header').then(function(affix) {
             affix.default(document.querySelector('.affixing-header'));
             // Indicate that document is ready (used by tests)
