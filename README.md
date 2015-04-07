@@ -13,13 +13,13 @@ The module itself is available in a wide range of flavors:
 3. As the `window.affixingHeader` global with dependencies bundled in: `dist/affixing-header-bundled.js`, or minified as `dist/affixing-header-bundled-min.js`
 4. As an ES6/ES2015 module, compatible with ES6-compatible module loaders like [SystemJS][] or compilers like [Babel][]: `src/affixing-header.js`
 
-It exports an `affixing-header` function if being used with a CommonJS or AMD module loader, or else exposes the function as a global named `window.affixingHeader`.
+It exports a single function via `require('affixing-header')` if being used with a CommonJS or AMD module loader, or else exposes the function as a global named `window.affixingHeader`.
 
 ### `affixingHeader( element )`
 
 #### `element` Element
 
-The DOM element to which the affixing behaviour should be attached. Must be a single Element (e.g., the result of `document.querySelector` or `document.getElementById`), not a `NodeList`.
+The DOM element to which the affixing behavior should be attached. Must be a single Element (e.g., the result of `document.querySelector` or `document.getElementById`), not a `NodeList`.
 
 ### Dependencies
 
