@@ -20,7 +20,7 @@ This package uses [jank-free onscroll][], a requestAnimationFrame-based, perform
 
 ### Compatibility
 
-The scroll handling uses `requestAnimationFrame`, which is [only available in IE10+][raf-caniuse]. For older browsers, your header simply won?t affix when you scroll up, but you shouldn?t see any other issues (yay progressive enhancement!). To add compatibility for older browsers, just include a [requestAnimationFrame polyfill][raf-polyfill].
+The scroll handling uses `requestAnimationFrame`, which is [only available in IE10+][raf-caniuse]. For older browsers, your header won’t affix to the top of the page when you scroll up, but you shouldn’t see any other issues (yay progressive enhancement). To add full support for older browsers, just include a [requestAnimationFrame polyfill][raf-polyfill].
 
 [acusti.ca]: http://www.acusti.ca
 [jank-free onscroll]: https://github.com/acusti/jank-free-onscroll
