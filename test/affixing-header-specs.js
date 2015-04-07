@@ -87,7 +87,7 @@ function runTests(browser) {
 
         if (browser.name === 'ipad' || browser.name === 'iphone') {
             // The simulator seems to be suuuuper slow
-            testDuration = 80000;
+            testDuration = 100000;
         }
         this.timeout(testDuration);
 
