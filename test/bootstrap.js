@@ -30,8 +30,8 @@ function reportTestDetails() {
             username: process.env.SAUCE_USERNAME,
             password: process.env.SAUCE_ACCESS_KEY
         });
-        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {});
         console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
+        return sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, function () {});
     }
     testState.update({isReported: true});
 }
@@ -54,7 +54,7 @@ runner.on('suite', function() {
     testState.reset();
 });
 runner.on('suite end', function() {
-    reportTestDetails();
+    return reportTestDetails();
 });
 
 // browsers.forEach(function(browser) {
