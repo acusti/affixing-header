@@ -17,7 +17,8 @@
 		"after",
 		"beforeEach",
 		"afterEach",
-		"it"
+		"it",
+		"System"
 	],
 	"quotmark": "single",
 	"regexp": true,
