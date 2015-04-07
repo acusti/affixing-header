@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test/bootstrap.js",
     "test-mocha": "mocha --reporter spec test/bootstrap.js",
-    "build": "esperanto -i src/affixing-header.js -o dist/affixing-header.js -t umd -n affixingHeader",
+    "build": "esperanto -b -i src/affixing-header.js -o dist/affixing-header.js -t umd -n affixingHeader",
     "build-install": "npm install -g esperanto;"
   },
   "repository": {
@@ -46,5 +46,12 @@
   },
   "dependencies": {
     "jank-free-onscroll": "^0.2.1"
+  },
+  "jspm": {
+    "directories": {
+      "lib": "src"
+    },
+    "main": "affixing-header",
+    "format": "es6"
   }
 }
