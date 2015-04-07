@@ -1,6 +1,8 @@
-var webdriver      = require('selenium-webdriver'),
-    chai           = require('chai'),
-    expect         = chai.expect;
+var webdriver = require('selenium-webdriver'),
+    chai      = require('chai'),
+    expect    = chai.expect,
+    testState = require('./helpers/state');
+    // Saucelabs = require('saucelabs');
 
 chai.use(require('chai-as-promised'));
 
@@ -45,7 +47,11 @@ function runTests(browser) {
     		.build();
     	}
         console.log(('\n  Running tests for ' + browser.name).cyan);
-    	return driver.get('http://localhost:3000/test/index.html');
+    	return driver.get('http://localhost:3000/test/index.html').then(function() {
+            driver.getSession().then(function (session) {
+                testState.update({sauceSessionId: session.getId()});
+            });
+        });
     }
 
     // Returns a function to pass to executeAsyncScript; returns an object to the promise callback with position and top css of the header element
@@ -76,8 +82,14 @@ function runTests(browser) {
     }
 
     describe('affixing-header', function() {
-        var pageHeight;
-        this.timeout(40000);
+        var testDuration = 40000,
+            pageHeight;
+
+        if (browser.name === 'ipad' || browser.name === 'iphone') {
+            // The simulator seems to be suuuuper slow
+            testDuration = 80000;
+        }
+        this.timeout(testDuration);
 
     	before(function() {
     		return setupDocument();
@@ -102,6 +114,14 @@ function runTests(browser) {
         });
 
         after(function() {
+            // Using mocha's bail option, if test gets here, it passed
+            // if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
+            //     var sauce = new Saucelabs({
+            //         username: process.env.SAUCE_USERNAME,
+            //         password: process.env.SAUCE_ACCESS_KEY
+            //     });
+            //     sauce.updateJob(sauceSessionId, {passed: true}, function () {});
+            // }
             return driver.quit();
             // Resolve promise
             // deferred.resolve();

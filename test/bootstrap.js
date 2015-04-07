@@ -1,7 +1,12 @@
 // BEGIN - Static server for test html
 var finalhandler = require('finalhandler'),
     http         = require('http'),
-    serveStatic  = require('serve-static');
+    serveStatic  = require('serve-static'),
+    Mocha        = require('mocha'),
+    Saucelabs    = require('saucelabs'),
+    testState    = require('./helpers/state');
+
+require('colors');
 
 // Serve up project root
 var serve = serveStatic('./');
@@ -16,20 +21,76 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
-// Test runner
-var runTests = require('./affixing-header-specs'),
-    browsers = [
-        {name: 'chrome'},
-        {name: 'firefox'}
-    ];
+var isSauceRequestQueued = false,
+    sauceCallbackQueue   = [];
 
-if (process.env.TRAVIS_JOB_NUMBER) {
-	browsers.push(
-        {name: 'internet explorer'},
-        {name: 'safari', version: 7}/*,
-        {name: 'ipad', version: 8},
-        {name: 'iphone', version: 8}*/
-    );
+function sauceCallbackConductor() {
+    sauceCallbackQueue.forEach(function(callback) {
+        callback();
+    });
+    sauceCallbackQueue = [];
+    isSauceRequestQueued = false;
 }
 
-browsers.forEach(runTests);
+function reportTestDetails() {
+    if (testState.get('isReported')) {
+        return;
+    }
+    if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER && testState.get('sauceSessionId')) {
+        var sauce = new Saucelabs({
+            username: process.env.SAUCE_USERNAME,
+            password: process.env.SAUCE_ACCESS_KEY
+        });
+        sauce.updateJob(testState.get('sauceSessionId'), {passed: !testState.get('isFailing')}, sauceCallbackConductor);
+        isSauceRequestQueued = true;
+        console.log(('  Test suite reported as ' + (testState.get('isFailing') ? 'failed' : 'passed\n')).yellow);
+    }
+    testState.update({isReported: true});
+}
+var mocha = new Mocha({
+    ui: 'bdd',
+    reporter: 'spec'
+});
+mocha.addFile('test/conductor.js');
+
+// browserConfig.set(browsers.shift());
+var runner = mocha.run(function(failures) {
+    if (isSauceRequestQueued) {
+        sauceCallbackQueue.push(function() {
+            process.exit(failures);
+        });
+    } else {
+        process.exit(failures);
+    }
+});
+runner.on('fail', function() {
+    testState.update({isFailing: true});
+    reportTestDetails();
+});
+runner.on('suite', function() {
+    testState.reset();
+});
+runner.on('suite end', function() {
+    reportTestDetails();
+});
+
+// browsers.forEach(function(browser) {
+//     browserConfig.set(browser);
+//     // Start up Mocha
+//     var runner   = mocha.run(),
+//         isFailed = false;
+//     runner.on('fail', function() {
+//         isFailed = true;
+//     });
+//     runner.on('end', function() {
+//         if (process.env.SAUCE_USERNAME && process.env.SAUCE_SESSION_ID && process.env.TRAVIS_JOB_NUMBER) {
+//             var sauce = new Saucelabs({
+//                 username: process.env.SAUCE_USERNAME,
+//                 password: process.env.SAUCE_ACCESS_KEY
+//             });
+//             sauce.updateJob(process.env.SAUCE_SESSION_ID, {passed: !isFailed}, function () {});
+//         }
+//     });
+//
+//     // runTests(browser);
+// });
