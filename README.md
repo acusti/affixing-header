@@ -11,9 +11,9 @@ The module itself is available in a wide range of flavors:
 1. As a CommonJS (Browserify-friendly) module (via [UMD]): `dist/affixing-header.js`
 2. As an AMD (RequireJS-friendly) module (also via UMD): `dist/affixing-header.js`
 3. As the `window.affixingHeader` global with dependencies bundled in: `dist/affixing-header-bundled.js`, or minified as `dist/affixing-header-bundled-min.js`
-4. As an ES6/ES2015 module, compatible with ES6-compatible module loaders like [SystemJS][] or compilers like [Babel][]: `src/affixing-header.js`
+4. As an ES6/ES2015 module (identified by `jsnext:main` in package.json), compatible with ES6-compatible module loaders like [SystemJS][] or compilers like [Babel][]: `src/affixing-header.js`
 
-It exports a single function via `require('affixing-header')` if being used with a CommonJS or AMD module loader, or else exposes the function as a global named `window.affixingHeader`.
+Exports a single function via `require('affixing-header')` if being used with a CommonJS or AMD module loader, or else exposes the function as a global named `window.affixingHeader`.
 
 ### `affixingHeader( element )`
 
