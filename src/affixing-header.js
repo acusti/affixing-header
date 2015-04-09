@@ -108,7 +108,7 @@ function onResizeDebouncer() {
 }
 
 export default function(navElement) {
-    var headerStyles, headerTopBorderWidth, headerBackgroundColor;
+    var headerStyles, headerTopBorderWidth;
 	if (!navElement) {
 		return;
 	}
