@@ -7,8 +7,7 @@ import onscrolling from 'onscrolling';
 // - scrolling direction
 // - "deliberateness" of scroll in current direction (for affixing header, it shouldn't be just a casual slip)
 // - state when transitioning for adjusting position
-var verticalTolerance  = 7,
-    scrollYPrev        = 0,
+var scrollYPrev        = 0,
     scrollY            = 0,
     upScrollCount      = 0,
     isNavAffixed       = false,
@@ -22,8 +21,8 @@ function affixNavBar() {
     isNavAffixed          = true;
     isNavTransitioning    = false;
     header.style.position = 'fixed';
-    header.style.top      = verticalTolerance * -1 + 'px';
-    headerDimensions.top  = verticalTolerance * -1;
+    header.style.top      = '0px';
+    headerDimensions.top  = 0;
 }
 
 function unAffixNavBar() {
@@ -46,8 +45,8 @@ function unAffixNavBar() {
 		isNavTransitioning = false;
 	}
     if (newHeaderTop !== false) {
-        header.style.top     = newHeaderTop - verticalTolerance + 'px';
-        headerDimensions.top = newHeaderTop - verticalTolerance;
+        header.style.top     = newHeaderTop + 'px';
+        headerDimensions.top = newHeaderTop;
     }
 	header.style.position = 'absolute';
 }
@@ -71,7 +70,7 @@ function handleScroll(scrollYCurrent) {
 	if (scrollY < scrollYPrev) {
 		// If the user has scrolled up quickly / jumped up (like shift-spacebar)
 		// Or we are transitioning and have reached the top of the bar
-		if ((!isNavAffixed && scrollY + headerDimensions.height + 10 < scrollYPrev) || isNavTransitioning && scrollY <= headerDimensions.top + verticalTolerance + 2) {
+		if ((!isNavAffixed && scrollY + headerDimensions.height + 10 < scrollYPrev) || isNavTransitioning && scrollY <= headerDimensions.top + 2) {
 			affixNavBar();
 		} else if (!isNavAffixed && !isNavTransitioning) {
 			if (upScrollCount > 6) {
@@ -108,24 +107,14 @@ function onResizeDebouncer() {
 }
 
 export default function(navElement) {
-    var headerStyles, headerTopBorderWidth;
 	if (!navElement) {
 		return;
 	}
     // Set initial state
     header                = navElement;
     header.style.position = 'absolute';
-    header.style.top      = verticalTolerance * -1 + 'px';
-    headerDimensions.top  = verticalTolerance * -1;
-    headerStyles          = window.getComputedStyle(header);
-    headerTopBorderWidth  = parseInt(headerStyles.getPropertyValue('border-top-width'), 10);
-    // Vertical tolerance is an extra amount of space above the header used to help avoid unseemly flashes while scrolling
-    // Add it via the top border of the header
-    if (headerTopBorderWidth === 0) {
-        header.style.borderTopColor = headerStyles.getPropertyValue('background-color');
-        header.style.borderTopStyle = 'solid';
-    }
-    header.style.borderTopWidth = headerTopBorderWidth + verticalTolerance + 'px';
+    header.style.top      = '0px';
+    headerDimensions.top  = 0;
     // Trigger calculations caching and attach debouncer to resize event
     calculateDimensions();
     window.addEventListener('resize', onResizeDebouncer);
