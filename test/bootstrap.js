@@ -60,12 +60,12 @@ mocha.addFile('test/conductor.js');
 revision.branch(function(branchName) {
     var testUrl = '/test/index.html';
     if (process.env.TRAVIS_JOB_NUMBER) {
-        testUrl = 'https://rawgit.com/acusti/affixing-header/' + branchName + testUrl;
+        testUrl = 'http://rawgit.com/acusti/affixing-header/' + branchName + testUrl;
     } else {
         testUrl = 'http://localhost:3000' + testUrl;
     }
     testState.update({testUrl: testUrl});
-    
+
     var runner = mocha.run(function(failures) {
         if (isSauceRequestQueued) {
             sauceCallbackQueue.push(function() {
