@@ -1,4 +1,4 @@
-var extend    = require('util')._extend,
+var extend    = require('extend'),
     webdriver = require('selenium-webdriver'),
     chai      = require('chai'),
     expect    = chai.expect,
@@ -36,7 +36,7 @@ function runTests(browser) {
                 tags                : tags
             };
             // Merge with browser settings
-            extend(capabilities, browser);
+            capabilities = extend(capabilities, browser);
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities(capabilities).build();
@@ -46,7 +46,7 @@ function runTests(browser) {
     		.build();
     	}
         console.log(('\n  Running tests for ' + browser.browserName).cyan);
-        
+
     	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
                 testState.update({sauceSessionId: session.getId()});
