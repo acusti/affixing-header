@@ -9,11 +9,11 @@ var runTests  = require('./affixing-header-specs'),
 
 if (process.env.TRAVIS_JOB_NUMBER) {
 	browsers.push(
-        {name: 'safari', version: 7},
-        {name: 'ipad', version: 8, appiumVersion: '1.2.2'},
-        {name: 'iphone', version: 8, appiumVersion: '1.2.2'},
-        {name: 'chrome', platform: 'android', appiumVersion: '1.2.2'},
-        {name: 'internet explorer'}
+        {browserName: 'safari', version: 7},
+        {browserName: 'ipad', version: 8, appiumVersion: '1.2.2'},
+        {browserName: 'iphone', version: 8, appiumVersion: '1.2.2'},
+        {browserName: 'chrome', platformName: 'android', appiumVersion: '1.2.2'},
+        {browserName: 'internet explorer'}
 	);
 }
 

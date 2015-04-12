@@ -1,4 +1,5 @@
-var webdriver = require('selenium-webdriver'),
+var extend    = require('util')._extend,
+    webdriver = require('selenium-webdriver'),
     chai      = require('chai'),
     expect    = chai.expect,
     testState = require('./helpers/state');
@@ -31,19 +32,11 @@ function runTests(browser) {
                 build               : process.env.TRAVIS_BUILD_NUMBER,
                 username            : process.env.SAUCE_USERNAME,
                 accessKey           : process.env.SAUCE_ACCESS_KEY,
-                browserName         : browser.name,
                 name                : 'Testing affixing-header',
                 tags                : tags
             };
-            if (browser.version) {
-                capabilities.version = browser.version;
-            }
-            if (browser.platform) {
-                capabilities.platformName = browser.platform;
-            }
-            if (browser.appiumVersion) {
-                capabilities.appiumVersion = browser.appiumVersion;
-            }
+            // Merge with browser settings
+            extend(capabilities, browser);
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities(capabilities).build();
