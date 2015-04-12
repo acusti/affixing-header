@@ -1,8 +1,8 @@
 // Test runner
 var runTests  = require('./affixing-header-specs'),
     browsers  = [
-        {name: 'chrome'},
-        {name: 'firefox'}
+        {browserName: 'chrome'},
+        {browserName: 'firefox'}
     ];
 
 // var browserConfig = require('./helpers/browser-config');
