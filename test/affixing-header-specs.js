@@ -46,7 +46,8 @@ function runTests(browser) {
     		.build();
     	}
         console.log(('\n  Running tests for ' + browser.browserName).cyan);
-    	return driver.get('http://localhost:3000/test/index.html').then(function() {
+        
+    	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
                 testState.update({sauceSessionId: session.getId()});
             });
