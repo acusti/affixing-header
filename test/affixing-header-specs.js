@@ -17,9 +17,9 @@ function runTests(browser) {
     var driver;
 
     function setupDocument() {
-        browser.name = browser.name || 'chrome';
+        browser.browserName = browser.browserName || 'chrome';
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
-            var tags = ['CI', browser.name],
+            var tags = ['CI', browser.browserName],
                 capabilities;
             if (process.env.TRAVIS_PULL_REQUEST) {
                 tags.push(process.env.TRAVIS_PULL_REQUEST);
@@ -42,10 +42,10 @@ function runTests(browser) {
     		.withCapabilities(capabilities).build();
     	} else {
     		driver = new webdriver.Builder()
-    		.forBrowser(browser.name)
+    		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.name).cyan);
+        console.log(('\n  Running tests for ' + browser.browserName).cyan);
     	return driver.get('http://localhost:3000/test/index.html').then(function() {
             driver.getSession().then(function (session) {
                 testState.update({sauceSessionId: session.getId()});
@@ -84,7 +84,7 @@ function runTests(browser) {
         var testDuration = 40000,
             pageHeight;
 
-        if (browser.name === 'ipad' || browser.name === 'iphone') {
+        if (browser.browserName === 'ipad' || browser.browserName === 'iphone') {
             // The simulator seems to be suuuuper slow
             testDuration = 100000;
         }
