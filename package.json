@@ -41,6 +41,7 @@
     "colors": "^1.0.3",
     "es6-module-loader": "^0.16.1",
     "esperanto": "^0.6.24",
+    "extend": "^2.0.0",
     "finalhandler": "^0.3.4",
     "jshint": "^2.6.3",
     "mocha": "^2.2.1",
