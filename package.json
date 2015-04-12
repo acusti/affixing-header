@@ -1,6 +1,6 @@
 {
   "name": "affixing-header",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "An affixing header that behaves normally as a user navigates down a page, but reveals itself naturally when a user scrolls or drags upwards. Inspired by iOS Safari, Medium, and others.",
   "main": "dist/affixing-header.js",
   "jsnext:main": "src/affixing-header.js",
