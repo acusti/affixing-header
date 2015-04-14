@@ -82,12 +82,14 @@ function runTests(browser) {
     }
 
     describe('affixing-header', function() {
-        var testDuration = 60000,
+        var testDuration  = 60000,
+            scriptTimeout = 2000,
             pageHeight;
 
-        // If using appium, increase timeout to 3 minutes
+        // If using appium, increase total timeout to 3 minutes and script timeout to 5 seconds
         if (browser.appiumVersion) {
-            testDuration = 180000;
+            testDuration  = 180000;
+            scriptTimeout = 4000;
         }
         this.timeout(testDuration);
 
@@ -105,7 +107,7 @@ function runTests(browser) {
 
         afterEach(function() {
             // Reset position and refresh browser, wait until it is reloaded
-            driver.manage().timeouts().setScriptTimeout(2000, 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1);
             driver.executeAsyncScript(scrollTo(), 0).then(function() {
                 driver.navigate().refresh();
             });
@@ -132,7 +134,7 @@ function runTests(browser) {
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1);
             return driver.executeAsyncScript(scrollTo(), Math.round(pageHeight / 2)).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -143,7 +145,7 @@ function runTests(browser) {
             var scrollCount = 8,
                 scrollY     = Math.round(pageHeight / 2);
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1 + scrollCount + 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1 + scrollCount + 1);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -165,7 +167,7 @@ function runTests(browser) {
                 scrollY     = Math.round(pageHeight / 2),
                 scrollDelta = Math.round(scrollY / (scrollCount + 4));
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1 + scrollCount + 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1 + scrollCount + 1);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -184,7 +186,7 @@ function runTests(browser) {
     	it('allows header to disappear again when scrolling down', function() {
             var scrollY = Math.round(pageHeight / 2);
 
-            driver.manage().timeouts().setScriptTimeout(2000, 4);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 4);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
