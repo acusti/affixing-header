@@ -55,7 +55,7 @@ mocha.addFile('test/conductor.js');
 
 // browserConfig.set(browsers.shift());
 
-testState.update({testUrl: 'http://localhost:3000/test/index.html'});
+testState.update({testUrl: 'http://127.0.0.1:3000/test/index.html'});
 
 var runner = mocha.run(function(failures) {
     if (isSauceRequestQueued) {
