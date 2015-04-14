@@ -1,18 +1,19 @@
 // Test runner
 var runTests  = require('./affixing-header-specs'),
     browsers  = [
-        {name: 'chrome'},
-        {name: 'firefox'}
+        {browserName: 'chrome'},
+        {browserName: 'firefox'}
     ];
 
 // var browserConfig = require('./helpers/browser-config');
 
 if (process.env.TRAVIS_JOB_NUMBER) {
 	browsers.push(
-        {name: 'safari', version: 7},
-        // {name: 'ipad', version: 8},
-        // {name: 'iphone', version: 8},
-        {name: 'internet explorer'}
+        {browserName: 'safari', version: 7},
+        {browserName: 'ipad', version: '8.2', appiumVersion: '1.3.7'},
+        {browserName: 'iphone', version: '8.2', appiumVersion: '1.3.7'},
+        // {browserName: 'chrome', platformName: 'Android', platformVersion: '4.0', appiumVersion: '1.3.7'},
+        {browserName: 'internet explorer'}
 	);
 }
 

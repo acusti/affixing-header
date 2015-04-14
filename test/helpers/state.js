@@ -1,17 +1,18 @@
-var extend = require('util')._extend;
+var extend = require('extend');
 
 var initialTestState = {
 	isFailing: false,
-	isReported: false
+	isReported: false,
+	sauceSessionId: ''
 };
 var testState = extend({}, initialTestState);
 
 var stateInterface = {
 	update: function(state) {
-		extend(testState, state);
+		testState = extend(testState, state);
 	},
 	reset: function() {
-		testState = extend({}, initialTestState);
+		testState = extend(testState, initialTestState);
 	},
 	get: function(key) {
 		return testState[key];

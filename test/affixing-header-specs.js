@@ -1,4 +1,5 @@
-var webdriver = require('selenium-webdriver'),
+var extend    = require('extend'),
+    webdriver = require('selenium-webdriver'),
     chai      = require('chai'),
     expect    = chai.expect,
     testState = require('./helpers/state');
@@ -16,9 +17,9 @@ function runTests(browser) {
     var driver;
 
     function setupDocument() {
-        browser.name = browser.name || 'chrome';
+        browser.browserName = browser.browserName || 'chrome';
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
-            var tags = ['CI', browser.name],
+            var tags = ['CI', browser.browserName],
                 capabilities;
             if (process.env.TRAVIS_PULL_REQUEST) {
                 tags.push(process.env.TRAVIS_PULL_REQUEST);
@@ -31,23 +32,22 @@ function runTests(browser) {
                 build               : process.env.TRAVIS_BUILD_NUMBER,
                 username            : process.env.SAUCE_USERNAME,
                 accessKey           : process.env.SAUCE_ACCESS_KEY,
-                browserName         : browser.name,
                 name                : 'Testing affixing-header',
                 tags                : tags
             };
-            if (browser.version) {
-                capabilities.version = browser.version;
-            }
+            // Merge with browser settings
+            capabilities = extend(capabilities, browser);
     		driver = new webdriver.Builder()
     		.usingServer('http://' + process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY + '@ondemand.saucelabs.com:80/wd/hub')
     		.withCapabilities(capabilities).build();
     	} else {
     		driver = new webdriver.Builder()
-    		.forBrowser(browser.name)
+    		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.name).cyan);
-    	return driver.get('http://localhost:3000/test/index.html').then(function() {
+        console.log(('\n  Running tests for ' + browser.browserName + ' with test url ' + testState.get('testUrl')).cyan);
+
+    	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
                 testState.update({sauceSessionId: session.getId()});
             });
@@ -85,7 +85,7 @@ function runTests(browser) {
         var testDuration = 40000,
             pageHeight;
 
-        if (browser.name === 'ipad' || browser.name === 'iphone') {
+        if (browser.browserName === 'ipad' || browser.browserName === 'iphone') {
             // The simulator seems to be suuuuper slow
             testDuration = 100000;
         }
