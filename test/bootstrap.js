@@ -76,24 +76,3 @@ runner.on('suite', function() {
 runner.on('suite end', function() {
     reportTestDetails();
 });
-
-// browsers.forEach(function(browser) {
-//     browserConfig.set(browser);
-//     // Start up Mocha
-//     var runner   = mocha.run(),
-//         isFailed = false;
-//     runner.on('fail', function() {
-//         isFailed = true;
-//     });
-//     runner.on('end', function() {
-//         if (process.env.SAUCE_USERNAME && process.env.SAUCE_SESSION_ID && process.env.TRAVIS_JOB_NUMBER) {
-//             var sauce = new Saucelabs({
-//                 username: process.env.SAUCE_USERNAME,
-//                 password: process.env.SAUCE_ACCESS_KEY
-//             });
-//             sauce.updateJob(process.env.SAUCE_SESSION_ID, {passed: !isFailed}, function () {});
-//         }
-//     });
-//
-//     // runTests(browser);
-// });
