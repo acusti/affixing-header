@@ -21,8 +21,6 @@ var server = http.createServer(function(req, res) {
 server.listen(3000);
 // END - Static server
 
-var revision = require('git-rev');
-
 var isSauceRequestQueued = false,
     sauceCallbackQueue   = [];
 
@@ -57,34 +55,26 @@ mocha.addFile('test/conductor.js');
 
 // browserConfig.set(browsers.shift());
 
-revision.branch(function(branchName) {
-    var testUrl = '/test/index.html';
-    if (process.env.TRAVIS_JOB_NUMBER) {
-        testUrl = 'https://rawgit.com/acusti/affixing-header/' + branchName + testUrl;
-    } else {
-        testUrl = 'http://localhost:3000' + testUrl;
-    }
-    testState.update({testUrl: testUrl});
+testState.update({testUrl: 'http://localhost:3000/test/index.html'});
 
-    var runner = mocha.run(function(failures) {
-        if (isSauceRequestQueued) {
-            sauceCallbackQueue.push(function() {
-                process.exit(failures);
-            });
-        } else {
+var runner = mocha.run(function(failures) {
+    if (isSauceRequestQueued) {
+        sauceCallbackQueue.push(function() {
             process.exit(failures);
-        }
-    });
-    runner.on('fail', function() {
-        testState.update({isFailing: true});
-        reportTestDetails();
-    });
-    runner.on('suite', function() {
-        testState.reset();
-    });
-    runner.on('suite end', function() {
-        reportTestDetails();
-    });
+        });
+    } else {
+        process.exit(failures);
+    }
+});
+runner.on('fail', function() {
+    testState.update({isFailing: true});
+    reportTestDetails();
+});
+runner.on('suite', function() {
+    testState.reset();
+});
+runner.on('suite end', function() {
+    reportTestDetails();
 });
 
 // browsers.forEach(function(browser) {
