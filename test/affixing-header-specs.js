@@ -82,12 +82,12 @@ function runTests(browser) {
     }
 
     describe('affixing-header', function() {
-        var testDuration = 40000,
+        var testDuration = 60000,
             pageHeight;
 
-        if (browser.browserName === 'ipad' || browser.browserName === 'iphone') {
-            // The simulator seems to be suuuuper slow
-            testDuration = 100000;
+        // If using appium, increase timeout to 3 minutes
+        if (browser.appiumVersion) {
+            testDuration = 180000;
         }
         this.timeout(testDuration);
 
