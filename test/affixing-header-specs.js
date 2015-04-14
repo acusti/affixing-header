@@ -45,7 +45,7 @@ function runTests(browser) {
     		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.browserName + ' with testUrl ' + testState.get('testUrl')).cyan);
+        console.log(('\n  Running tests for ' + browser.browserName + ' with test url ' + testState.get('testUrl')).cyan);
 
     	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
