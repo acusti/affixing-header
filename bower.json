@@ -29,5 +29,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "onscrolling": "^0.3.2"
+  }
 }
