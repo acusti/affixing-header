@@ -12,7 +12,7 @@ if (process.env.TRAVIS_JOB_NUMBER) {
         {browserName: 'safari', version: 7},
         {browserName: 'ipad',   version: '7.1.2', appiumVersion: '1.3.7'},
         {browserName: 'iphone', version: '7.1.2', appiumVersion: '1.3.7'},
-        {browserName: 'chrome', platformVersion: '4.0', platformName: 'Android', appiumVersion: '1.3.7', deviceName: 'Android Emulator'},
+        {browserName: 'chrome', platformVersion: '4.2', platformName: 'Android', appiumVersion: '1.3.7', deviceName: 'Android Emulator'},
         {browserName: 'internet explorer'}
 	);
 }
