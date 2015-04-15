@@ -21,12 +21,10 @@ function runTests(browser) {
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
             var tags = ['CI', browser.browserName],
                 capabilities;
-            if (process.env.TRAVIS_PULL_REQUEST) {
-                tags.push(process.env.TRAVIS_PULL_REQUEST);
-            }
-            if (process.env.TRAVIS_BRANCH) {
-                tags.push(process.env.TRAVIS_BRANCH);
-            }
+            if (process.env.TRAVIS_PULL_REQUEST) tags.push('PR-' + process.env.TRAVIS_PULL_REQUEST); // jshint ignore:line
+            if (process.env.TRAVIS_BRANCH)       tags.push(process.env.TRAVIS_BRANCH); // jshint ignore:line
+            if (browser.platformName)            tags.push(browser.platformName); // jshint ignore:line
+
             capabilities = {
                 'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
                 build               : process.env.TRAVIS_BUILD_NUMBER,
@@ -45,7 +43,7 @@ function runTests(browser) {
     		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.browserName + ' with test url ' + testState.get('testUrl')).cyan);
+        console.log(('\n  Running tests for ' + browser.browserName + ' ' + (browser.version || browser.platformVersion || '(no version specified)') + (browser.platformName ? ' on ' + browser.platformName : '') + ' with test url ' + testState.get('testUrl')).cyan);
 
     	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
