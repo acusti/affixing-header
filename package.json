@@ -53,7 +53,7 @@
     "uglify-js": "^2.4.19"
   },
   "dependencies": {
-    "onscrolling": "^0.3.0"
+    "onscrolling": "^0.3.2"
   },
   "jspm": {
     "directories": {
