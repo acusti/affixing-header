@@ -43,7 +43,7 @@ function runTests(browser) {
     		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.browserName + ' ' + (browser.version || browser.platformVersion || '(no version specified)') + (browser.platformName ? ' on ' + browser.platformName : '') + ' with test url ' + testState.get('testUrl')).cyan);
+        console.log(('\n  Running tests for ' + browser.browserName + ' ' + (browser.version || browser.platformVersion || '(no version specified)') + (browser.deviceName ? ' on ' + browser.deviceName : '') + ' with test url ' + testState.get('testUrl')).cyan);
 
     	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
