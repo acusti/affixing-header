@@ -9,10 +9,10 @@ var runTests  = require('./affixing-header-specs'),
 
 if (process.env.TRAVIS_JOB_NUMBER) {
 	browsers.push(
-        {browserName: 'safari', version: '7'},
-        {browserName: 'safari', deviceName: 'iPhone Simulator', platformVersion: '7.1', platformName: 'iOS',     appiumVersion: '1.3.7'},
-        {browserName: 'safari', deviceName: 'iPad Simulator',   platformVersion: '7.1', platformName: 'iOS',     appiumVersion: '1.3.7'},
-        {browserName: 'chrome', deviceName: 'android',          platformVersion: '4.4', platformName: 'android', appiumVersion: '1.3.7'},
+        {browserName: 'Safari',  version: '7'},
+        {browserName: 'Safari',  deviceName: 'iPhone Simulator', platformName: 'iOS',   platformVersion: '8.2',     appiumVersion: '1.3.7'},
+        {browserName: 'Safari',  deviceName: 'iPad Simulator',   platformName: 'iOS',   platformVersion: '8.2',     appiumVersion: '1.3.7'},
+        {browserName: 'Android', deviceName: 'Android Emulator', platform:     'Linux', version:         '5.1'},
         {browserName: 'internet explorer'}
 	);
 }
