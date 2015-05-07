@@ -21,12 +21,10 @@ function runTests(browser) {
     	if (process.env.SAUCE_USERNAME && process.env.TRAVIS_JOB_NUMBER) {
             var tags = ['CI', browser.browserName],
                 capabilities;
-            if (process.env.TRAVIS_PULL_REQUEST) {
-                tags.push(process.env.TRAVIS_PULL_REQUEST);
-            }
-            if (process.env.TRAVIS_BRANCH) {
-                tags.push(process.env.TRAVIS_BRANCH);
-            }
+            if (process.env.TRAVIS_PULL_REQUEST) tags.push('PR-' + process.env.TRAVIS_PULL_REQUEST); // jshint ignore:line
+            if (process.env.TRAVIS_BRANCH)       tags.push(process.env.TRAVIS_BRANCH); // jshint ignore:line
+            if (browser.platformName)            tags.push(browser.platformName); // jshint ignore:line
+
             capabilities = {
                 'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
                 build               : process.env.TRAVIS_BUILD_NUMBER,
@@ -45,7 +43,7 @@ function runTests(browser) {
     		.forBrowser(browser.browserName)
     		.build();
     	}
-        console.log(('\n  Running tests for ' + browser.browserName + ' with test url ' + testState.get('testUrl')).cyan);
+        console.log(('\n  Running tests for ' + browser.browserName + ' ' + (browser.version || browser.platformVersion || '(no version specified)') + (browser.deviceName ? ' on ' + browser.deviceName : '') + ' with test url ' + testState.get('testUrl')).cyan);
 
     	return driver.get(testState.get('testUrl')).then(function() {
             driver.getSession().then(function (session) {
@@ -82,12 +80,14 @@ function runTests(browser) {
     }
 
     describe('affixing-header', function() {
-        var testDuration = 40000,
+        var testDuration  = 60000,
+            scriptTimeout = 2000,
             pageHeight;
 
-        if (browser.browserName === 'ipad' || browser.browserName === 'iphone') {
-            // The simulator seems to be suuuuper slow
-            testDuration = 100000;
+        // If using appium, increase total timeout to 3 minutes and script timeout to 5 seconds
+        if (browser.appiumVersion) {
+            testDuration  = 180000;
+            scriptTimeout = 4000;
         }
         this.timeout(testDuration);
 
@@ -105,7 +105,7 @@ function runTests(browser) {
 
         afterEach(function() {
             // Reset position and refresh browser, wait until it is reloaded
-            driver.manage().timeouts().setScriptTimeout(2000, 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1);
             driver.executeAsyncScript(scrollTo(), 0).then(function() {
                 driver.navigate().refresh();
             });
@@ -132,7 +132,7 @@ function runTests(browser) {
             expect(header.getCssValue('top')).to.eventually.equal('0px');
             expect(header.getCssValue('position')).to.eventually.equal('absolute');
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1);
             return driver.executeAsyncScript(scrollTo(), Math.round(pageHeight / 2)).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -143,7 +143,7 @@ function runTests(browser) {
             var scrollCount = 8,
                 scrollY     = Math.round(pageHeight / 2);
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1 + scrollCount + 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1 + scrollCount + 1);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -165,7 +165,7 @@ function runTests(browser) {
                 scrollY     = Math.round(pageHeight / 2),
                 scrollDelta = Math.round(scrollY / (scrollCount + 4));
 
-            driver.manage().timeouts().setScriptTimeout(2000, 1 + scrollCount + 1);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 1 + scrollCount + 1);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
@@ -184,7 +184,7 @@ function runTests(browser) {
     	it('allows header to disappear again when scrolling down', function() {
             var scrollY = Math.round(pageHeight / 2);
 
-            driver.manage().timeouts().setScriptTimeout(2000, 4);
+            driver.manage().timeouts().setScriptTimeout(scriptTimeout, 4);
             driver.executeAsyncScript(scrollTo(), scrollY).then(function(computedStyles) {
                 expect(computedStyles.top).to.equal('0px');
                 expect(computedStyles.position).to.equal('absolute');
