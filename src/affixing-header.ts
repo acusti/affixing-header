@@ -1,5 +1,8 @@
 import onscrolling from 'onscrolling';
 
+// Create window fallback if needed for SSR
+const window = globalThis.window ?? globalThis;
+
 // Keep track of:
 // - state of nav bar
 // - scrolling direction
