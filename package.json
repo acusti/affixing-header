@@ -74,6 +74,6 @@
         "vitest": "^1.6.0"
     },
     "dependencies": {
-        "onscrolling": "^2.0.0-beta.5"
+        "onscrolling": "^2.0.0-beta.6"
     }
 }
