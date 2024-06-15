@@ -1,4 +1,5 @@
 import onscrolling from 'onscrolling';
+
 // Keep track of:
 // - state of nav bar
 // - scrolling direction
@@ -9,25 +10,31 @@ let scrollY = 0;
 let upScrollCount = 0;
 let isNavAffixed = false;
 let isNavTransitioning = false;
-let resizeTimeoutID = null;
-let header = null;
-let headerDimensions = {};
-const documentDimensions = {};
+let resizeTimeoutID: number | null = null;
+let header: HTMLElement | null = null;
+let headerDimensions: { height?: number; top?: number } = {};
+const documentDimensions: {
+    clientHeight?: number;
+    scrollHeight?: number;
+    scrollTop?: number;
+} = {};
+
 function affixNavBar() {
-    if (!header)
-        return;
+    if (!header) return;
+
     isNavAffixed = true;
     isNavTransitioning = false;
     header.style.position = 'fixed';
     header.style.top = '0px';
     headerDimensions.top = 0;
 }
+
 function unaffixNavBar() {
     if (!isNavAffixed || !header || headerDimensions.height == null) {
         // Nothing to do here
         return;
     }
-    let newHeaderTop = null;
+    let newHeaderTop: number | null = null;
     upScrollCount = 0;
     isNavAffixed = false;
     // Only set top position for switch from fixed absolute if not transitioning
@@ -35,57 +42,72 @@ function unaffixNavBar() {
         // If user jumped down the page (e.g. paging with spacebar)
         if (scrollY > scrollYPrev + headerDimensions.height + 5) {
             newHeaderTop = scrollYPrev + 5;
-        }
-        else {
+        } else {
             newHeaderTop = scrollY;
         }
-    }
-    else {
+    } else {
         isNavTransitioning = false;
     }
+
     if (newHeaderTop != null) {
         header.style.top = newHeaderTop + 'px';
         headerDimensions.top = newHeaderTop;
     }
+
     header.style.position = 'absolute';
 }
+
 function checkNavPosition() {
-    if (!isNavAffixed &&
+    if (
+        !isNavAffixed &&
         headerDimensions.top != null &&
-        headerDimensions.top > scrollY) {
+        headerDimensions.top > scrollY
+    ) {
         affixNavBar();
     }
 }
-function handleScroll({ scrollY: scrollYCurrent, }) {
+
+function handleScroll({
+    scrollY: scrollYCurrent,
+}: {
+    scrollX: number;
+    scrollY: number;
+}) {
     scrollY = scrollYCurrent;
     // Make sure that the nav bar doesn't wind up stranded in the middle of the page
     checkNavPosition();
     // Type guard for null values
-    if (header == null ||
+    if (
+        header == null ||
         documentDimensions.clientHeight == null ||
         documentDimensions.scrollHeight == null ||
         documentDimensions.scrollTop == null ||
         headerDimensions.height == null ||
-        headerDimensions.top == null) {
+        headerDimensions.top == null
+    ) {
         return;
     }
     // If this is bounce scrolling (e.g. Mac OS, iOS), bail
     // Another way to check the top
     //(scrollY + window.innerHeight) > document.documentElement.scrollHeight
-    if (scrollY < 0 ||
+    if (
+        scrollY < 0 ||
         documentDimensions.scrollHeight - documentDimensions.scrollTop <
-            documentDimensions.clientHeight) {
+            documentDimensions.clientHeight
+    ) {
         return;
     }
+
     if (scrollY < scrollYPrev) {
         // If the user has scrolled up quickly / jumped up (like shift-spacebar)
         // Or we are transitioning and have reached the top of the bar
-        if ((!isNavAffixed &&
-            scrollY + headerDimensions.height + 10 < scrollYPrev) ||
-            (isNavTransitioning && scrollY <= headerDimensions.top + 2)) {
+        if (
+            (!isNavAffixed &&
+                scrollY + headerDimensions.height + 10 < scrollYPrev) ||
+            (isNavTransitioning && scrollY <= headerDimensions.top + 2)
+        ) {
             affixNavBar();
-        }
-        else if (!isNavAffixed && !isNavTransitioning) {
+        } else if (!isNavAffixed && !isNavTransitioning) {
             if (upScrollCount > 6) {
                 isNavAffixed = true;
                 // Need header height, so update cached dimensions
@@ -99,26 +121,28 @@ function handleScroll({ scrollY: scrollYCurrent, }) {
             }
             upScrollCount++;
         }
-    }
-    else if (isNavAffixed) {
+    } else if (isNavAffixed) {
         unaffixNavBar();
     }
     scrollYPrev = scrollY;
 }
+
 function calculateDimensions() {
     resizeTimeoutID = null;
     documentDimensions.clientHeight = document.documentElement.clientHeight;
     documentDimensions.scrollHeight = document.documentElement.scrollHeight;
     documentDimensions.scrollTop = document.documentElement.scrollTop;
-    headerDimensions.height = header === null || header === void 0 ? void 0 : header.offsetHeight;
+    headerDimensions.height = header?.offsetHeight;
 }
+
 function onResizeDebouncer() {
     if (resizeTimeoutID != null) {
         window.clearTimeout(resizeTimeoutID);
     }
     resizeTimeoutID = window.setTimeout(calculateDimensions, 150);
 }
-export default function (navElement) {
+
+export default function (navElement: HTMLElement) {
     // Set initial state
     header = navElement;
     const initialHeaderPosition = header.style.position;
@@ -131,6 +155,7 @@ export default function (navElement) {
     window.addEventListener('resize', onResizeDebouncer);
     // Use onscrolling helper to listen for scroll changes
     const cleanupOnscrolling = onscrolling(handleScroll, { vertical: true });
+
     return () => {
         cleanupOnscrolling();
         if (header) {
@@ -142,4 +167,3 @@ export default function (navElement) {
         window.removeEventListener('resize', onResizeDebouncer);
     };
 }
-//# sourceMappingURL=affixing-header.js.map
