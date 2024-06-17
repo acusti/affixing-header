@@ -81,14 +81,11 @@ function unaffixNavBar() {
 }
 
 function checkNavPosition() {
-    if (
-        !isNavAffixed &&
-        headerDimensions.top != null &&
-        scrollY != null &&
-        headerDimensions.top > scrollY
-    ) {
+    if (!isNavAffixed && headerDimensions.top! > scrollY!) {
         affixNavBar();
+        return true;
     }
+    return false;
 }
 
 function handleScroll({
@@ -98,8 +95,6 @@ function handleScroll({
     scrollY: number;
 }) {
     scrollY = scrollYCurrent;
-    // make sure that the nav bar doesn't wind up stranded in the middle of the page
-    checkNavPosition();
     // type guard for null values
     if (
         header == null ||
@@ -116,6 +111,8 @@ function handleScroll({
 
     const scrollDelta = scrollY - scrollYPrevious;
     scrollYPrevious = scrollY;
+    // ensures nav bar isn’t stranded in the middle of the page; returns true if handled
+    if (checkNavPosition()) return;
 
     if (scrollDelta < 0) {
         if (
