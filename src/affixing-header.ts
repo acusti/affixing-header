@@ -120,7 +120,7 @@ function handleScroll({
     if (scrollDelta < 0) {
         if (
             // if the user has scrolled up quickly / jumped up (like shift-spacebar)
-            (!isNavAffixed && scrollDelta >= headerDimensions.height + 10) ||
+            (!isNavAffixed && scrollDelta > headerDimensions.height) ||
             // or we are transitioning and have reached the top of the bar
             (isNavTransitioning && scrollY <= headerDimensions.top + 2)
         ) {
