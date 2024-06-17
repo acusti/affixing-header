@@ -8,7 +8,7 @@ const window = globalThis.window ?? globalThis;
 // - scrolling direction
 // - “deliberateness” of scroll in current direction (for affixing header, it shouldn't be just a casual slip)
 // - state when transitioning for adjusting position
-let scrollYPrev = 0;
+let scrollYPrevious = 0;
 let scrollY = 0;
 let upScrollCount = 0;
 let isNavAffixed = false;
@@ -44,8 +44,8 @@ function unaffixNavBar() {
     // Only set top position for switch from fixed absolute if not transitioning
     if (!isNavTransitioning) {
         // If user jumped down the page (e.g. paging with spacebar)
-        if (scrollY > scrollYPrev + headerDimensions.height + 5) {
-            newHeaderTop = scrollYPrev + 5;
+        if (scrollY > scrollYPrevious + headerDimensions.height + 5) {
+            newHeaderTop = scrollYPrevious + 5;
         } else {
             newHeaderTop = scrollY;
         }
@@ -102,12 +102,12 @@ function handleScroll({
         return;
     }
 
-    if (scrollY < scrollYPrev) {
+    if (scrollY < scrollYPrevious) {
         // If the user has scrolled up quickly / jumped up (like shift-spacebar)
         // Or we are transitioning and have reached the top of the bar
         if (
             (!isNavAffixed &&
-                scrollY + headerDimensions.height + 10 < scrollYPrev) ||
+                scrollY + headerDimensions.height + 10 < scrollYPrevious) ||
             (isNavTransitioning && scrollY <= headerDimensions.top + 2)
         ) {
             affixNavBar();
@@ -128,7 +128,7 @@ function handleScroll({
     } else if (isNavAffixed) {
         unaffixNavBar();
     }
-    scrollYPrev = scrollY;
+    scrollYPrevious = scrollY;
 }
 
 function calculateDimensions() {
