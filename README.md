@@ -6,11 +6,15 @@ Create an affixing header that behaves normally as a user navigates down a page,
 
 The module is ESM-only and exports a single default `affixingHeader` function:
 
-### `affixingHeader( element )`
+### `affixingHeader( element, options )`
 
 #### `element` HTMLElement
 
 The DOM element to which the affixing behavior should be attached. Must be a single `HTMLElement` (e.g., the result of `document.querySelector` or `document.getElementById`), not a `NodeList`.
+
+#### `options` object `{ useSticky?: boolean }`
+
+Optional options for customizing the behavior of the affixing header. Passing `{ useSticky: true }` will cause the module to use `position: sticky` (instead of `position: fixed`) when affixing the header on scrolling up.
 
 ### affixingHeader return value
 
