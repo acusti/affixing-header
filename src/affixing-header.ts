@@ -14,10 +14,10 @@ let upScrollCount = 0;
 let isNavAffixed = false;
 let isNavTransitioning = false;
 let resizeTimeoutID: number | null = null;
+let affixedPosition: 'fixed' | 'sticky' = 'fixed';
 let header: HTMLElement | null = null;
 let headerDimensions: { height?: number; top?: number } = {};
-let affixedPosition: 'fixed' | 'sticky' = 'fixed';
-const documentDimensions: {
+let documentDimensions: {
     clientHeight?: number;
     scrollHeight?: number;
     scrollTop?: number;
@@ -166,12 +166,19 @@ export default function (
 
     return () => {
         cleanupOnscrolling();
+        window.removeEventListener('resize', onResizeDebouncer);
+        // Reset module state
         if (header) {
             header.style.position = initialHeaderPosition;
             header.style.top = initialHeaderTop;
             header = null;
         }
-        headerDimensions = {};
-        window.removeEventListener('resize', onResizeDebouncer);
+        headerDimensions = documentDimensions = {};
+        scrollY = scrollYPrevious = upScrollCount = 0;
+        isNavTransitioning = isNavAffixed = false;
+        if (resizeTimeoutID != null) {
+            window.clearTimeout(resizeTimeoutID);
+            resizeTimeoutID = null;
+        }
     };
 }
