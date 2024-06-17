@@ -7,7 +7,7 @@ const delay = (time: number) => new Promise((resolve) => setTimeout(resolve, tim
 globalThis.window = new Window({ url: 'https://localhost:8080' });
 globalThis.document = window.document;
 document.body.innerHTML =
-    '<style>#fixture {min-height:200vh;} #nav {height: 30px;}</style><div id="fixture"><nav id="nav">Affixing Header</nav></div>';
+    '<style>.root {min-height:200vh;} nav {height: 30px;}</style><div class="root"><nav id="nav">Affixing Header</nav></div>';
 
 const affixingHeader = (await import('../affixing-header.js')).default;
 
