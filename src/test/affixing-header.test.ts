@@ -29,14 +29,10 @@ describe('affixingHeader', function () {
         const cleanup = affixingHeader(nav);
         expect(nav.style.position).toBe('absolute');
         expect(nav.style.top).toBe('0px');
-        triggerScroll(20);
-        await delay(0);
-        triggerScroll(20);
-        await delay(0);
-        triggerScroll(20);
-        await delay(0);
-        triggerScroll(20);
-        await delay(0);
+        for (let index = 0; index < 5; index++) {
+            triggerScroll(20);
+            await delay(0);
+        }
         expect(nav.style.position).toBe('absolute');
         expect(nav.style.top).toBe('0px');
         // trigger a “deliberate” scroll up
