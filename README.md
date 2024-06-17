@@ -41,7 +41,6 @@ Tests use vitest + happy-dom and can be run with `yarn test`.
 ## TODO
 
 - [ ] Add `{ scrollingParent: DOMElement }` option for usage with scrollable elements other than `scrollingDocument`
-- [ ] Refactor nextTick approach to use an IntersectionObserver with a threshold of 99 to detect when the header should be affixed
 
 [acusti.ca]: http://www.acusti.ca
 [onscrolling]: https://github.com/acusti/onscrolling
