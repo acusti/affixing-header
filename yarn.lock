@@ -2179,10 +2179,10 @@ onetime@^6.0.0:
   dependencies:
     mimic-fn "^4.0.0"
 
-onscrolling@^2.0.0-beta.6:
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/onscrolling/-/onscrolling-2.0.0-beta.6.tgz#6a52b667dfb3fb446a5e3dbd94219a45f738516b"
-  integrity sha512-Km/lii7UeRTmTkPRP3nna0wqCIbYzCsm7zIx7vTLjMTlftwgGt+0FDY2ckZ6735G/sjw2fYItdtNDPdllz8oFw==
+onscrolling@^2.0.0-beta.7:
+  version "2.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/onscrolling/-/onscrolling-2.0.0-beta.7.tgz#f710531b3bf5acb48a8bd9f9df227114878f23ad"
+  integrity sha512-pHn/9DCW0X6bSH9mN5TYjZtA3Pv8HElugUFOb1rv6PjUU3nRP/J1I4FCQwLZmveMMPsSBNzCep3CCM8Nq4EkwA==
 
 optionator@^0.9.3:
   version "0.9.4"
