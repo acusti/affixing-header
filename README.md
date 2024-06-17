@@ -22,15 +22,17 @@ Optional options for customizing the behavior of the affixing header. Passing `{
 
 The `affixingHeader` function returns a cleanup function that takes no arguments and is used to remove listeners and cleanup the affixing behavior.
 
-### Dependencies
+## Dependencies
 
 This package uses [onscrolling][], a requestAnimationFrame-based, performant, mobile-friendly scroll event handler, to listen for page scrolls, but has no other dependencies.
 
-### Compatibility
+## Compatibility
 
-The scroll handling uses `requestAnimationFrame`, which is [only available in IE10+][raf-caniuse]. To add full support for older browsers, just include a [requestAnimationFrame polyfill][raf-polyfill].
+This module is ESM-only and takes advantage of modern JS language features. It includes code to ensure it won’t throw errors in non-browser environments (e.g. node, workersd, deno, bun, etc.), where it will not do anything but also won’t break SSR. To make it compatible with non-ESM environments and older browsers, it must be transpiled.
+
+## Tests
+
+Tests use vitest + happy-dom and can be run with `yarn test`.
 
 [acusti.ca]: http://www.acusti.ca
 [onscrolling]: https://github.com/acusti/onscrolling
-[raf-caniuse]: http://caniuse.com/#feat=requestanimationframe
-[raf-polyfill]: https://gist.github.com/paulirish/1579671
