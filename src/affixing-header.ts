@@ -105,14 +105,8 @@ function handleScroll({
     ) {
         return;
     }
-    // If this is bounce scrolling (e.g. Mac OS, iOS), bail
-    // Another way to check the top
-    //(scrollY + window.innerHeight) > document.documentElement.scrollHeight
-    if (
-        scrollY < 0 ||
-        documentDimensions.scrollHeight - documentDimensions.scrollTop <
-            documentDimensions.clientHeight
-    ) {
+    // if this is bounce scrolling (e.g. Mac OS, iOS), bail
+    if (scrollY < 0) {
         return;
     }
 
