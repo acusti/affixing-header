@@ -50,4 +50,30 @@ describe('affixingHeader', function () {
         expect(nav.style.position).toBe('');
         expect(nav.style.top).toBe('');
     });
+
+    it('uses position: sticky for affixed header if options.useSticky is passed as true', async () => {
+        const cleanup = affixingHeader(nav, { useSticky: true });
+        expect(nav.style.position).toBe('absolute');
+        expect(nav.style.top).toBe('0px');
+        for (let index = 0; index < 5; index++) {
+            triggerScroll(20);
+            await delay(0);
+        }
+        expect(nav.style.position).toBe('absolute');
+        expect(nav.style.top).toBe('0px');
+        // trigger a “deliberate” scroll up
+        for (let index = 0; index < 8; index++) {
+            triggerScroll(-2);
+            await delay(0);
+        }
+        expect(nav.style.position).toBe('absolute');
+        expect(parseInt(nav.style.top, 10)).toBeGreaterThan(30);
+        triggerScroll(-30);
+        await delay(0);
+        expect(nav.style.position).toBe('sticky');
+        expect(nav.style.top).toBe('0px');
+        cleanup();
+        expect(nav.style.position).toBe('');
+        expect(nav.style.top).toBe('');
+    });
 });
