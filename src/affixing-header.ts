@@ -15,6 +15,8 @@ let isNavAffixed = false;
 let isNavTransitioning = false;
 let resizeTimeoutID: number | null = null;
 let affixedPosition: 'fixed' | 'sticky' = 'fixed';
+let classNameAffixed: string | null = null;
+let classNameAffixing: string | null = null;
 let header: HTMLElement | null = null;
 let headerDimensions: { height?: number; top?: number } = {};
 let documentDimensions: {
@@ -28,6 +30,12 @@ function affixNavBar() {
 
     isNavAffixed = true;
     isNavTransitioning = false;
+    if (classNameAffixed) {
+        header.classList.add(classNameAffixed);
+    }
+    if (classNameAffixing) {
+        header.classList.remove(classNameAffixing);
+    }
     header.style.position = affixedPosition;
     header.style.top = '0px';
     headerDimensions.top = 0;
@@ -38,9 +46,15 @@ function unaffixNavBar() {
         // Nothing to do here
         return;
     }
-    let newHeaderTop: number | null = null;
     upScrollCount = 0;
     isNavAffixed = false;
+    if (classNameAffixed) {
+        header.classList.remove(classNameAffixed);
+    }
+    if (classNameAffixing) {
+        header.classList.remove(classNameAffixing);
+    }
+    let newHeaderTop: number | null = null;
     // Only set top position for switch from fixed absolute if not transitioning
     if (!isNavTransitioning) {
         // If user jumped down the page (e.g. paging with spacebar)
@@ -120,6 +134,9 @@ function handleScroll({
                 if (scrollY > headerDimensions.top + headerDimensions.height + 25) {
                     headerDimensions.top = scrollY - headerDimensions.height - 25;
                     header.style.top = headerDimensions.top + 'px';
+                    if (classNameAffixing) {
+                        header.classList.add(classNameAffixing);
+                    }
                 }
                 isNavTransitioning = true;
             }
@@ -146,13 +163,22 @@ function onResizeDebouncer() {
     resizeTimeoutID = window.setTimeout(calculateDimensions, 150);
 }
 
-export default function (
-    navElement: HTMLElement,
-    { useSticky }: { useSticky?: boolean } = {},
-) {
+type Options = {
+    classNameAffixed?: string;
+    classNameAffixing?: string;
+    useSticky?: boolean;
+};
+
+export default function (navElement: HTMLElement, options: Options = {}) {
     // Set initial state
     header = navElement;
-    affixedPosition = useSticky ? 'sticky' : 'fixed';
+    affixedPosition = options.useSticky ? 'sticky' : 'fixed';
+    if (options.classNameAffixed) {
+        classNameAffixed = options.classNameAffixed;
+    }
+    if (options.classNameAffixing) {
+        classNameAffixing = options.classNameAffixing;
+    }
     const initialHeaderPosition = header.style.position;
     const initialHeaderTop = header.style.top;
     header.style.position = 'absolute';
@@ -171,8 +197,16 @@ export default function (
         if (header) {
             header.style.position = initialHeaderPosition;
             header.style.top = initialHeaderTop;
+            if (classNameAffixed) {
+                header.classList.remove(classNameAffixed);
+            }
+            if (classNameAffixing) {
+                header.classList.remove(classNameAffixing);
+            }
             header = null;
         }
+        affixedPosition = 'fixed';
+        classNameAffixed = classNameAffixing = null;
         headerDimensions = documentDimensions = {};
         scrollY = scrollYPrevious = upScrollCount = 0;
         isNavTransitioning = isNavAffixed = false;

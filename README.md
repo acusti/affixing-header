@@ -12,9 +12,13 @@ The module is ESM-only and exports a single default `affixingHeader` function:
 
 The DOM element to which the affixing behavior should be attached. Must be a single `HTMLElement` (e.g., the result of `document.querySelector` or `document.getElementById`), not a `NodeList`.
 
-#### `options` object `{ useSticky?: boolean }`
+#### `options` object `{ classNameAffixed?: string; classNameAffixing?: string; useSticky?: boolean }`
 
-Optional options for customizing the behavior of the affixing header. Passing `{ useSticky: true }` will cause the module to use `position: sticky` (instead of `position: fixed`) when affixing the header on scrolling up.
+Optional options for customizing the behavior of the affixing header:
+
+- `{ classNameAffixed: string }` will add the specified class to the header when it is affixed (i.e. when it has been scrolled up)
+- `{ classNameAffixing: string }` will add the specified class to the header when it is in the process of affixing (i.e. when the user has started scrolling up and the header is moving into view)
+- `{ useSticky: true }` will cause the module to use `position: sticky` (instead of `position: fixed`) when affixing the header on scrolling up
 
 ### affixingHeader return value
 
@@ -33,6 +37,11 @@ This module is ESM-only and takes advantage of modern JS language features. It i
 ## Tests
 
 Tests use vitest + happy-dom and can be run with `yarn test`.
+
+## TODO
+
+- [ ] Add `{ scrollingParent: DOMElement }` option for usage with scrollable elements other than `scrollingDocument`
+- [ ] Refactor nextTick approach to use an IntersectionObserver with a threshold of 99 to detect when the header should be affixed
 
 [acusti.ca]: http://www.acusti.ca
 [onscrolling]: https://github.com/acusti/onscrolling

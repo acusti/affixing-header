@@ -76,4 +76,43 @@ describe('affixingHeader', function () {
         expect(nav.style.position).toBe('');
         expect(nav.style.top).toBe('');
     });
+
+    it('adds classNames when affixing and affixed based on options.classNameAffixed and options.classNameAffixing', async () => {
+        const cleanup = affixingHeader(nav, {
+            classNameAffixed: 'affixed',
+            classNameAffixing: 'affixing',
+        });
+        expect(nav.classList.contains('affixed')).toBe(false);
+        expect(nav.classList.contains('affixing')).toBe(false);
+        for (let index = 0; index < 5; index++) {
+            triggerScroll(20);
+            await delay(0);
+        }
+        expect(nav.classList.contains('affixed')).toBe(false);
+        expect(nav.classList.contains('affixing')).toBe(false);
+        // trigger a “deliberate” scroll up
+        for (let index = 0; index < 8; index++) {
+            triggerScroll(-2);
+            await delay(0);
+        }
+        expect(nav.classList.contains('affixed')).toBe(false);
+        expect(nav.classList.contains('affixing')).toBe(true);
+        expect(nav.style.position).toBe('absolute');
+        expect(parseInt(nav.style.top, 10)).toBeGreaterThan(30);
+        triggerScroll(-30);
+        await delay(0);
+        expect(nav.classList.contains('affixed')).toBe(true);
+        expect(nav.classList.contains('affixing')).toBe(false);
+        expect(nav.style.position).toBe('fixed');
+        expect(nav.style.top).toBe('0px');
+        for (let index = 0; index < 5; index++) {
+            triggerScroll(20);
+            await delay(0);
+        }
+        expect(nav.classList.contains('affixed')).toBe(false);
+        expect(nav.classList.contains('affixing')).toBe(false);
+        cleanup();
+        expect(nav.style.position).toBe('');
+        expect(nav.style.top).toBe('');
+    });
 });
