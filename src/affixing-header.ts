@@ -16,6 +16,7 @@ let isNavTransitioning = false;
 let resizeTimeoutID: number | null = null;
 let header: HTMLElement | null = null;
 let headerDimensions: { height?: number; top?: number } = {};
+let affixedPosition: 'fixed' | 'sticky' = 'fixed';
 const documentDimensions: {
     clientHeight?: number;
     scrollHeight?: number;
@@ -27,7 +28,7 @@ function affixNavBar() {
 
     isNavAffixed = true;
     isNavTransitioning = false;
-    header.style.position = 'fixed';
+    header.style.position = affixedPosition;
     header.style.top = '0px';
     headerDimensions.top = 0;
 }
@@ -145,9 +146,13 @@ function onResizeDebouncer() {
     resizeTimeoutID = window.setTimeout(calculateDimensions, 150);
 }
 
-export default function (navElement: HTMLElement) {
+export default function (
+    navElement: HTMLElement,
+    { useSticky }: { useSticky?: boolean } = {},
+) {
     // Set initial state
     header = navElement;
+    affixedPosition = useSticky ? 'sticky' : 'fixed';
     const initialHeaderPosition = header.style.position;
     const initialHeaderTop = header.style.top;
     header.style.position = 'absolute';
