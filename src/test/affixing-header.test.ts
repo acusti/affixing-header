@@ -27,54 +27,46 @@ describe('affixingHeader', function () {
 
     it('takes a DOM element and styles it so that it reveals when user scrolls upwards and becomes fixed', async () => {
         const cleanup = affixingHeader(nav);
-        expect(nav.style.position).toBe('absolute');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'absolute', top: '0px' });
         for (let index = 0; index < 5; index++) {
             triggerScroll(20);
             await delay(0);
         }
-        expect(nav.style.position).toBe('absolute');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'absolute', top: '0px' });
         // trigger a “deliberate” scroll up
         for (let index = 0; index < 8; index++) {
             triggerScroll(-2);
             await delay(0);
         }
-        expect(nav.style.position).toBe('absolute');
+        expect(nav).toHaveStyle({ position: 'absolute' });
         expect(parseInt(nav.style.top, 10)).toBeGreaterThan(30);
         triggerScroll(-30);
         await delay(0);
-        expect(nav.style.position).toBe('fixed');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'fixed', top: '0px' });
         cleanup();
-        expect(nav.style.position).toBe('');
-        expect(nav.style.top).toBe('');
+        expect(nav).toHaveStyle({ position: '', top: '' });
     });
 
     it('uses position: sticky for affixed header if options.useSticky is passed as true', async () => {
         const cleanup = affixingHeader(nav, { useSticky: true });
-        expect(nav.style.position).toBe('absolute');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'absolute', top: '0px' });
         for (let index = 0; index < 5; index++) {
             triggerScroll(20);
             await delay(0);
         }
-        expect(nav.style.position).toBe('absolute');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'absolute', top: '0px' });
         // trigger a “deliberate” scroll up
         for (let index = 0; index < 8; index++) {
             triggerScroll(-2);
             await delay(0);
         }
-        expect(nav.style.position).toBe('absolute');
+        expect(nav).toHaveStyle({ position: 'absolute' });
         expect(parseInt(nav.style.top, 10)).toBeGreaterThan(30);
         triggerScroll(-30);
         await delay(0);
-        expect(nav.style.position).toBe('sticky');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveStyle({ position: 'sticky', top: '0px' });
         cleanup();
-        expect(nav.style.position).toBe('');
-        expect(nav.style.top).toBe('');
+        expect(nav).toHaveStyle({ position: '', top: '' });
     });
 
     it('adds classNames when affixing and affixed based on options.classNameAffixed and options.classNameAffixing', async () => {
@@ -82,37 +74,35 @@ describe('affixingHeader', function () {
             classNameAffixed: 'affixed',
             classNameAffixing: 'affixing',
         });
-        expect(nav.classList.contains('affixed')).toBe(false);
-        expect(nav.classList.contains('affixing')).toBe(false);
+        expect(nav).not.toHaveClass('affixed');
+        expect(nav).not.toHaveClass('affixing');
         for (let index = 0; index < 5; index++) {
             triggerScroll(20);
             await delay(0);
         }
-        expect(nav.classList.contains('affixed')).toBe(false);
-        expect(nav.classList.contains('affixing')).toBe(false);
+        expect(nav).not.toHaveClass('affixed');
+        expect(nav).not.toHaveClass('affixing');
         // trigger a “deliberate” scroll up
         for (let index = 0; index < 8; index++) {
             triggerScroll(-2);
             await delay(0);
         }
-        expect(nav.classList.contains('affixed')).toBe(false);
-        expect(nav.classList.contains('affixing')).toBe(true);
-        expect(nav.style.position).toBe('absolute');
+        expect(nav).not.toHaveClass('affixed');
+        expect(nav).toHaveClass('affixing');
+        expect(nav).toHaveStyle({ position: 'absolute' });
         expect(parseInt(nav.style.top, 10)).toBeGreaterThan(30);
         triggerScroll(-30);
         await delay(0);
-        expect(nav.classList.contains('affixed')).toBe(true);
-        expect(nav.classList.contains('affixing')).toBe(false);
-        expect(nav.style.position).toBe('fixed');
-        expect(nav.style.top).toBe('0px');
+        expect(nav).toHaveClass('affixed');
+        expect(nav).not.toHaveClass('affixing');
+        expect(nav).toHaveStyle({ position: 'fixed', top: '0px' });
         for (let index = 0; index < 5; index++) {
             triggerScroll(20);
             await delay(0);
         }
-        expect(nav.classList.contains('affixed')).toBe(false);
-        expect(nav.classList.contains('affixing')).toBe(false);
+        expect(nav).not.toHaveClass('affixed');
+        expect(nav).not.toHaveClass('affixing');
         cleanup();
-        expect(nav.style.position).toBe('');
-        expect(nav.style.top).toBe('');
+        expect(nav).toHaveStyle({ position: '', top: '' });
     });
 });

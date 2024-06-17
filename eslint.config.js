@@ -138,8 +138,6 @@ export default [
             ...jestPlugin.configs.recommended.rules,
             ...jestDOMPlugin.configs.recommended.rules,
             ...testingLibraryPlugin.configs.react.rules,
-            'jest-dom/prefer-to-have-class': 'off', // vitest doesn’t have a toHaveClass matcher
-            'jest-dom/prefer-to-have-style': 'off', // vitest doesn’t have a toHaveStyle matcher
         },
         settings: {
             jest: {
