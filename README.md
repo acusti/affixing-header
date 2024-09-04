@@ -1,4 +1,4 @@
-# Affixing Header&nbsp; [![build workflow](https://github.com/acusti/affixing-header/actions/workflows/deploy.yml/badge.svg)](https://github.com/acusti/affixing-header/actions)
+# Affixing Header&nbsp; [![Build and Test results](https://img.shields.io/github/actions/workflow/status/acusti/affixing-header/build.yml?branch=master&style=for-the-badge)](https://github.com/acusti/affixing-header/actions)
 
 Create an affixing header that behaves normally as a user navigates down a page, but reveals itself naturally when a user scrolls or drags upwards. Inspired by iOS Safari, Medium, and others. See [an example implementation][acusti.ca] to see what it’s about. Works on desktop and mobile browsers.
 
